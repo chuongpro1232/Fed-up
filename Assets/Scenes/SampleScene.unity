@@ -398,6 +398,7 @@ GameObject:
   - component: {fileID: 1764314526}
   - component: {fileID: 1764314525}
   - component: {fileID: 1764314524}
+  - component: {fileID: 1764314527}
   m_Layer: 6
   m_Name: south-sheet_0
   m_TagString: Player
@@ -570,6 +571,19 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
+--- !u!114 &1764314527
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1764314521}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c049ff5760a121d4d86d96ea498b33ad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  moveSpeed: 5
 --- !u!1 &1953205728
 GameObject:
   m_ObjectHideFlags: 0
