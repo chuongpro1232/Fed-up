@@ -6,11 +6,12 @@ public class AimTrainerManager : MonoBehaviour
     [Header("Target Settings")]
     public GameObject targetPrefab;
     public int maxTargets = 5;
+    public float targetScale = 0.5f;
     public float spawnMinX = -4f;
     public float spawnMaxX = 4f;
-    public float spawnMinY = 0.5f;
-    public float spawnMaxY = 3.5f;
-    public float spawnZ = 3f;
+    public float spawnMinY = -2.5f;
+    public float spawnMaxY = 2.5f;
+    public float spawnZ = 8f;
 
     public float minSpawnDistance = 1.0f;
 
@@ -39,8 +40,8 @@ public class AimTrainerManager : MonoBehaviour
             SpawnTarget();
         }
 
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 
     void Update()
@@ -65,7 +66,8 @@ public class AimTrainerManager : MonoBehaviour
 
     void Shoot()
     {
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        // Shoot from the exact center of the screen (crosshair)
+        Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
         RaycastHit hit;
 
         if (Physics.Raycast(ray, out hit))
@@ -107,6 +109,7 @@ public class AimTrainerManager : MonoBehaviour
             if (!IsTooCloseToOtherTargets(spawnPosition))
             {
                 GameObject newTarget = Instantiate(targetPrefab, spawnPosition, Quaternion.identity);
+                newTarget.transform.localScale = Vector3.one * targetScale;
 
                 return;
             }
