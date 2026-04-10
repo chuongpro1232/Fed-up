@@ -10,23 +10,41 @@ public class PlayerMovement : MonoBehaviour
     private Animator animator;
     private Vector2 movement;
     private Vector2 lastMoveDirection;
+    private bool canMove = true;
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
 
-        // Default facing direction (e.g., South/Down)
+        // Default facing direction (South / Down)
         lastMoveDirection = new Vector2(0, -1);
     }
 
     void Update()
     {
+        if (!canMove)
+        {
+            movement = Vector2.zero;
+
+            if (animator != null)
+            {
+                animator.SetFloat("Horizontal", lastMoveDirection.x);
+                animator.SetFloat("Vertical", lastMoveDirection.y);
+                animator.SetFloat("Speed", 0f);
+            }
+
+            return;
+        }
+
         // 1. Get Input (WASD or Arrow Keys)
         movement.x = Input.GetAxisRaw("Horizontal");
         movement.y = Input.GetAxisRaw("Vertical");
 
-        // 2. Remember the last direction input so the idle animation knows which way to face
+        // Optional: normalize input so diagonal is not stronger
+        movement = movement.normalized;
+
+        // 2. Remember the last direction input so idle animation knows which way to face
         if (movement.x != 0 || movement.y != 0)
         {
             lastMoveDirection = movement;
@@ -37,15 +55,27 @@ public class PlayerMovement : MonoBehaviour
         {
             animator.SetFloat("Horizontal", lastMoveDirection.x);
             animator.SetFloat("Vertical", lastMoveDirection.y);
-            // sqrMagnitude is more performant than magnitude and works well for checking if we're moving (Speed > 0)
-            animator.SetFloat("Speed", movement.sqrMagnitude); 
+            animator.SetFloat("Speed", movement.sqrMagnitude);
         }
     }
 
     void FixedUpdate()
     {
+        if (!canMove)
+            return;
+
         // 4. Move the player using Physics
-        // We normalize the movement vector so diagonal movement isn't faster
-        rb.MovePosition(rb.position + movement.normalized * moveSpeed * Time.fixedDeltaTime);
+        rb.MovePosition(rb.position + movement * moveSpeed * Time.fixedDeltaTime);
+    }
+
+    public void SetCanMove(bool value)
+    {
+        canMove = value;
+        movement = Vector2.zero;
+
+        if (animator != null && !canMove)
+        {
+            animator.SetFloat("Speed", 0f);
+        }
     }
 }
