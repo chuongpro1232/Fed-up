@@ -44,4 +44,9 @@ public class TravelMenuUI : MonoBehaviour
     {
         SceneManager.LoadScene("StoreGame");
     }
+
+    public void GoToSchool()
+    {
+        SceneManager.LoadScene("Classroom");
+    }
 }
