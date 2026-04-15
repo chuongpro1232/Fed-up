@@ -14,6 +14,12 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Classroom.unity
     guid: f8a701f5d9e272f489b94b71d5a8c6eb
+  - enabled: 1
+    path: Assets/Scenes/AimTrainer.unity
+    guid: fb044adc7135d754788853e08f63c0c8
+  - enabled: 1
+    path: Assets/Scenes/MiniGameMath.unity
+    guid: 6465003f07b481148beabd5051e08665
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   m_UseUCBPForAssetBundles: 0
