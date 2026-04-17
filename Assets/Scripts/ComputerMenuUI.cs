@@ -42,7 +42,7 @@ public class ComputerMenuUI : MonoBehaviour
 
     public void GoToStudy()
     {
-        SceneManager.LoadScene("MiniGameMath");
+        SceneManager.LoadScene("Laptop");
     }
 
     public void GoToPlayGame()
