@@ -50,7 +50,7 @@ public class ComputerInteractTrigger : MonoBehaviour
         {
             playerInRange = true;
 
-            if (ePrompt != null && (computerMenuUI == null || !computerMenuUI.IsMenuOpen))
+
             {
                 ePrompt.SetActive(true);
             }
