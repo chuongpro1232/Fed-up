@@ -8,6 +8,7 @@ public class StartCutsceneDialogue : MonoBehaviour
     public Transform playerTransform;
     public Transform speakerPoint;
     public Camera mainCamera;
+    public ObjectiveUIManager objectiveUIManager;
 
     [Header("UI")]
     public RectTransform dialoguePanel;
@@ -20,6 +21,12 @@ public class StartCutsceneDialogue : MonoBehaviour
 
     [TextArea(2, 5)]
     public string[] dialogueLines;
+
+    [Header("Objective After Dialogue")]
+    public string objectiveTitle = "Current Objective";
+
+    [TextArea(2, 4)]
+    public string objectiveBody = "Go to the computer by the window. Choose Play or Study to proceed to the next event.";
 
     [Header("Position")]
     public Vector2 screenOffset = new Vector2(0f, 60f);
@@ -43,6 +50,11 @@ public class StartCutsceneDialogue : MonoBehaviour
                 canvasRect = parentCanvas.GetComponent<RectTransform>();
             }
         }
+
+        if (objectiveUIManager != null)
+        {
+            objectiveUIManager.HideObjective();
+        }
     }
 
     private void Start()
@@ -52,13 +64,12 @@ public class StartCutsceneDialogue : MonoBehaviour
             mainCamera = Camera.main;
         }
 
-        // Restore player position if returning from another scene
         if (SceneReturnData.hasSavedSampleScenePosition && playerTransform != null)
         {
             playerTransform.position = SceneReturnData.sampleScenePlayerPosition;
         }
 
-        // Skip intro dialogue if returning
+        // If returning from another scene, skip intro and show objective immediately
         if (SceneReturnData.skipSampleSceneIntro)
         {
             SceneReturnData.skipSampleSceneIntro = false;
@@ -73,6 +84,7 @@ public class StartCutsceneDialogue : MonoBehaviour
                 playerMovement.SetCanMove(true);
             }
 
+            ShowObjectivePanel();
             return;
         }
 
@@ -113,6 +125,11 @@ public class StartCutsceneDialogue : MonoBehaviour
         if (playerMovement != null)
         {
             playerMovement.SetCanMove(false);
+        }
+
+        if (objectiveUIManager != null)
+        {
+            objectiveUIManager.HideObjective();
         }
 
         if (dialoguePanel != null)
@@ -167,6 +184,17 @@ public class StartCutsceneDialogue : MonoBehaviour
         if (playerMovement != null)
         {
             playerMovement.SetCanMove(true);
+        }
+
+        ShowObjectivePanel();
+    }
+
+    private void ShowObjectivePanel()
+    {
+        if (objectiveUIManager != null)
+        {
+            objectiveUIManager.ShowObjective();
+            objectiveUIManager.SetObjective(objectiveTitle, objectiveBody);
         }
     }
 

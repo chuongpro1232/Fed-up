@@ -17,7 +17,7 @@ public class ComputerInteractTrigger : MonoBehaviour
 
     private void Update()
     {
-        if (playerInRange && Input.GetKeyDown(KeyCode.E))
+        if (playerInRange && Input.GetKeyDown(KeyCode.E) && (computerMenuUI == null || !computerMenuUI.IsMenuOpen))
         {
             if (computerMenuUI != null)
             {
@@ -37,7 +37,7 @@ public class ComputerInteractTrigger : MonoBehaviour
         {
             playerInRange = true;
 
-            if (ePrompt != null)
+            if (ePrompt != null && (computerMenuUI == null || !computerMenuUI.IsMenuOpen))
             {
                 ePrompt.SetActive(true);
             }
@@ -50,9 +50,13 @@ public class ComputerInteractTrigger : MonoBehaviour
         {
             playerInRange = true;
 
-
+            if (ePrompt != null)
             {
-                ePrompt.SetActive(true);
+                bool shouldShowCap = computerMenuUI == null || !computerMenuUI.IsMenuOpen;
+                if (ePrompt.activeSelf != shouldShowCap)
+                {
+                    ePrompt.SetActive(shouldShowCap);
+                }
             }
         }
     }

@@ -5,6 +5,15 @@ public class ComputerMenuUI : MonoBehaviour
 {
     public GameObject computerMenuPanel;
     public PlayerMovement playerMovement;
+    public Transform playerTransform;
+
+    public bool IsMenuOpen
+    {
+        get
+        {
+            return computerMenuPanel != null && computerMenuPanel.activeSelf;
+        }
+    }
 
     private void Start()
     {
@@ -40,25 +49,26 @@ public class ComputerMenuUI : MonoBehaviour
         }
     }
 
-    public void GoToStudy()
+    private void SaveReturnData()
     {
-        int state = PlayerPrefs.GetInt("LaptopPuzzleState", 0);
-        
-        // Progress states if returning from cutscenes
-        if (state == 1)
+        if (playerTransform != null)
         {
-            PlayerPrefs.SetInt("LaptopPuzzleState", 2);
-        }
-        else if (state == 4)
-        {
-            PlayerPrefs.SetInt("LaptopPuzzleState", 5);
+            SceneReturnData.sampleScenePlayerPosition = playerTransform.position;
+            SceneReturnData.hasSavedSampleScenePosition = true;
         }
 
-        SceneManager.LoadScene("Laptop");
+        SceneReturnData.skipSampleSceneIntro = true;
     }
 
     public void GoToPlayGame()
     {
+        SaveReturnData();
         SceneManager.LoadScene("AimTrainer");
+    }
+
+    public void GoToStudy()
+    {
+        SaveReturnData();
+        SceneManager.LoadScene("Laptop");
     }
 }
