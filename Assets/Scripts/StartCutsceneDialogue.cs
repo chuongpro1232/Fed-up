@@ -5,6 +5,7 @@ public class StartCutsceneDialogue : MonoBehaviour
 {
     [Header("References")]
     public PlayerMovement playerMovement;
+    public Transform playerTransform;
     public Transform speakerPoint;
     public Camera mainCamera;
 
@@ -49,6 +50,30 @@ public class StartCutsceneDialogue : MonoBehaviour
         if (mainCamera == null)
         {
             mainCamera = Camera.main;
+        }
+
+        // Restore player position if returning from another scene
+        if (SceneReturnData.hasSavedSampleScenePosition && playerTransform != null)
+        {
+            playerTransform.position = SceneReturnData.sampleScenePlayerPosition;
+        }
+
+        // Skip intro dialogue if returning
+        if (SceneReturnData.skipSampleSceneIntro)
+        {
+            SceneReturnData.skipSampleSceneIntro = false;
+
+            if (dialoguePanel != null)
+            {
+                dialoguePanel.gameObject.SetActive(false);
+            }
+
+            if (playerMovement != null)
+            {
+                playerMovement.SetCanMove(true);
+            }
+
+            return;
         }
 
         StartDialogue();

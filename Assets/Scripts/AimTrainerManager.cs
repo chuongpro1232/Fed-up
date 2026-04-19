@@ -1,5 +1,6 @@
 using UnityEngine;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class AimTrainerManager : MonoBehaviour
 {
@@ -12,7 +13,6 @@ public class AimTrainerManager : MonoBehaviour
     public float spawnMinY = -2.5f;
     public float spawnMaxY = 2.5f;
     public float spawnZ = 8f;
-
     public float minSpawnDistance = 1.0f;
 
     [Header("Game Settings")]
@@ -21,7 +21,10 @@ public class AimTrainerManager : MonoBehaviour
     [Header("UI")]
     public TMP_Text scoreText;
     public TMP_Text timerText;
-    public TMP_Text gameOverText;
+
+    [Header("Game Over UI")]
+    public GameObject gameOverPanel;
+    public TMP_Text finalScoreText;
 
     private int score = 0;
     private float timer;
@@ -30,7 +33,11 @@ public class AimTrainerManager : MonoBehaviour
     void Start()
     {
         timer = gameDuration;
-        gameOverText.gameObject.SetActive(false);
+
+        if (gameOverPanel != null)
+        {
+            gameOverPanel.SetActive(false);
+        }
 
         UpdateScoreUI();
         UpdateTimerUI();
@@ -66,7 +73,6 @@ public class AimTrainerManager : MonoBehaviour
 
     void Shoot()
     {
-        // Shoot from the exact center of the screen (crosshair)
         Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
         RaycastHit hit;
 
@@ -74,7 +80,6 @@ public class AimTrainerManager : MonoBehaviour
         {
             if (hit.collider.CompareTag("Target"))
             {
-                // Directly call the TargetHit method on the manager
                 TargetHit(hit.collider.gameObject);
             }
         }
@@ -110,13 +115,13 @@ public class AimTrainerManager : MonoBehaviour
             {
                 GameObject newTarget = Instantiate(targetPrefab, spawnPosition, Quaternion.identity);
                 newTarget.transform.localScale = Vector3.one * targetScale;
-
                 return;
             }
         }
 
         Debug.LogWarning("Could not find a free spawn position for a new target.");
     }
+
     bool IsTooCloseToOtherTargets(Vector3 newPosition)
     {
         GameObject[] existingTargets = GameObject.FindGameObjectsWithTag("Target");
@@ -137,8 +142,25 @@ public class AimTrainerManager : MonoBehaviour
     void EndGame()
     {
         gameEnded = true;
-        gameOverText.gameObject.SetActive(true);
-        gameOverText.text = "Game Over\nFinal Score: " + score;
+
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+
+        GameObject[] remainingTargets = GameObject.FindGameObjectsWithTag("Target");
+        foreach (GameObject target in remainingTargets)
+        {
+            Destroy(target);
+        }
+
+        if (gameOverPanel != null)
+        {
+            gameOverPanel.SetActive(true);
+        }
+
+        if (finalScoreText != null)
+        {
+            finalScoreText.text = "Final Score: " + score;
+        }
     }
 
     void UpdateScoreUI()
@@ -155,5 +177,20 @@ public class AimTrainerManager : MonoBehaviour
         {
             timerText.text = "Time: " + Mathf.CeilToInt(timer);
         }
+    }
+
+    public void TryAgain()
+    {
+        SceneManager.LoadScene("AimTrainer");
+    }
+
+    public void ExitToSampleScene()
+    {
+        SceneManager.LoadScene("SampleScene");
+    }
+
+    public void GoToStudy()
+    {
+        SceneManager.LoadScene("Laptop");
     }
 }

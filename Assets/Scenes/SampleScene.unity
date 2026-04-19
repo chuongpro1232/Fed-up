@@ -252,7 +252,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 303.8, y: 260}
+  m_AnchoredPosition: {x: 78.9, y: 133.3}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &85063627
@@ -451,6 +451,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   computerMenuPanel: {fileID: 443426253}
   playerMovement: {fileID: 1764314527}
+  playerTransform: {fileID: 1764314523}
 --- !u!4 &99364389
 Transform:
   m_ObjectHideFlags: 0
@@ -1728,6 +1729,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerMovement: {fileID: 1764314527}
+  playerTransform: {fileID: 1764314523}
   speakerPoint: {fileID: 1759293288}
   mainCamera: {fileID: 519420031}
   dialoguePanel: {fileID: 2020331171}

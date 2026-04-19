@@ -1,5 +1,4 @@
 using UnityEngine;
-using TMPro;
 
 public class ComputerInteractTrigger : MonoBehaviour
 {
@@ -39,6 +38,19 @@ public class ComputerInteractTrigger : MonoBehaviour
             playerInRange = true;
 
             if (ePrompt != null)
+            {
+                ePrompt.SetActive(true);
+            }
+        }
+    }
+
+    private void OnTriggerStay2D(Collider2D other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            playerInRange = true;
+
+            if (ePrompt != null && (computerMenuUI == null || !computerMenuUI.IsMenuOpen))
             {
                 ePrompt.SetActive(true);
             }
