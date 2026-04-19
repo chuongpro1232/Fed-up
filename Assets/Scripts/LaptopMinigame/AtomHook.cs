@@ -7,6 +7,8 @@ public class AtomHook : MonoBehaviour
     [HideInInspector] public MoleculeAtom parentAtom;
     [HideInInspector] public AtomHook connectedHook = null;
     
+    public static event System.Action OnConnectionChanged;
+    
     [Header("Cài đặt")]
     [Tooltip("Khoảng cách hít dính để tự động nối 2 móc câu lại với nhau")]
     public float snapDistance = 1.0f;
@@ -143,6 +145,7 @@ public class AtomHook : MonoBehaviour
 
         // Dàn trải các gậy nối nếu có liên kết đôi hoặc liên kết ba
         OrganizeBondsBetween(this.parentAtom, other.parentAtom);
+        OnConnectionChanged?.Invoke();
     }
 
     public void Disconnect()
@@ -154,6 +157,7 @@ public class AtomHook : MonoBehaviour
             this.connectedHook = null;
             
             OrganizeBondsBetween(this.parentAtom, otherAtom);
+            OnConnectionChanged?.Invoke();
         }
     }
 
