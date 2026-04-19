@@ -64,6 +64,15 @@ public class StartCutsceneDialogue : MonoBehaviour
             playerTransform.position = SceneReturnData.sampleScenePlayerPosition;
         }
 
+        if (SceneReturnData.hasFinishedStudy)
+        {
+            SceneReturnData.hasFinishedStudy = false;
+            SceneReturnData.skipSampleSceneIntro = false;
+            StartCoroutine(PlayBedtimeCutscene());
+            return;
+        }
+
+
         // If returning from another scene, skip intro and show objective immediately
         if (SceneReturnData.skipSampleSceneIntro)
         {
@@ -182,6 +191,133 @@ public class StartCutsceneDialogue : MonoBehaviour
 
         // Bắt đầu hiện hội thoại
         StartDialogue();
+    }
+
+    private System.Collections.IEnumerator PlayBedtimeCutscene()
+    {
+        cutsceneActive = true;
+        if (playerMovement != null) playerMovement.SetCanMove(false);
+
+        Collider2D playerCollider = null;
+        if (playerTransform != null)
+        {
+            playerCollider = playerTransform.GetComponent<Collider2D>();
+            if (playerCollider != null) playerCollider.enabled = false;
+        }
+
+        // Walk back to bed
+        if (playerTransform != null && bedWaypoint != null)
+        {
+            Animator anim = playerTransform.GetComponent<Animator>();
+            
+            while (Vector3.Distance(playerTransform.position, bedWaypoint.position) > 0.05f)
+            {
+                Vector3 dir = (bedWaypoint.position - playerTransform.position).normalized;
+                playerTransform.position = Vector3.MoveTowards(playerTransform.position, bedWaypoint.position, walkSpeed * Time.deltaTime);
+
+                if (anim != null)
+                {
+                    anim.SetFloat("Horizontal", dir.x);
+                    anim.SetFloat("Vertical", dir.y);
+                    anim.SetFloat("Speed", 1f); 
+                }
+                yield return null;
+            }
+
+            if (anim != null)
+            {
+                anim.SetFloat("Horizontal", 0);
+                anim.SetFloat("Vertical", 1);
+                anim.SetFloat("Speed", 0f);
+            }
+        }
+
+        // Fade out
+        GameObject canvasObj = new GameObject("FadeCanvas");
+        Canvas c = canvasObj.AddComponent<Canvas>();
+        c.renderMode = RenderMode.ScreenSpaceOverlay;
+        c.sortingOrder = 999;
+        canvasObj.AddComponent<UnityEngine.UI.CanvasScaler>();
+
+        GameObject imageObj = new GameObject("BlackImage");
+        imageObj.transform.SetParent(canvasObj.transform, false);
+        UnityEngine.UI.Image img = imageObj.AddComponent<UnityEngine.UI.Image>();
+        img.color = new Color(0, 0, 0, 0);
+        
+        RectTransform rt = img.GetComponent<RectTransform>();
+        rt.anchorMin = Vector2.zero;
+        rt.anchorMax = Vector2.one;
+        rt.sizeDelta = Vector2.zero;
+
+        float fadeTime = 2f;
+        float elapsed = 0f;
+        while (elapsed < fadeTime)
+        {
+            elapsed += Time.deltaTime;
+            float alpha = Mathf.Lerp(0f, 1f, elapsed / fadeTime);
+            img.color = new Color(0, 0, 0, alpha);
+            yield return null;
+        }
+
+        // Next Day
+        PlayerPrefs.SetInt("CurrentDay", 2);
+        yield return new WaitForSeconds(1f);
+        
+        DayManager dm = Object.FindObjectOfType<DayManager>();
+        if (dm != null) dm.SetupDay();
+
+        if (playerTransform != null && standWaypoint != null)
+        {
+            // Morning! Walk to standWaypoint again
+            
+            elapsed = 0f;
+            while (elapsed < fadeTime)
+            {
+                elapsed += Time.deltaTime;
+                float alpha = Mathf.Lerp(1f, 0f, elapsed / fadeTime);
+                img.color = new Color(0, 0, 0, alpha);
+                yield return null;
+            }
+            Destroy(canvasObj);
+
+            Animator anim = playerTransform.GetComponent<Animator>();
+            while (Vector3.Distance(playerTransform.position, standWaypoint.position) > 0.05f)
+            {
+                Vector3 dir = (standWaypoint.position - playerTransform.position).normalized;
+                playerTransform.position = Vector3.MoveTowards(playerTransform.position, standWaypoint.position, walkSpeed * Time.deltaTime);
+
+                if (anim != null)
+                {
+                    anim.SetFloat("Horizontal", dir.x);
+                    anim.SetFloat("Vertical", dir.y);
+                    anim.SetFloat("Speed", 1f); 
+                }
+                yield return null;
+            }
+
+            if (anim != null)
+            {
+                anim.SetFloat("Horizontal", 0);
+                anim.SetFloat("Vertical", -1);
+                anim.SetFloat("Speed", 0f);
+            }
+        }
+        else
+        {
+            elapsed = 0f;
+            while (elapsed < fadeTime)
+            {
+                elapsed += Time.deltaTime;
+                float alpha = Mathf.Lerp(1f, 0f, elapsed / fadeTime);
+                img.color = new Color(0, 0, 0, alpha);
+                yield return null;
+            }
+            Destroy(canvasObj);
+        }
+
+        if (playerCollider != null) playerCollider.enabled = true;
+        if (playerMovement != null) playerMovement.SetCanMove(true);
+        cutsceneActive = false;
     }
 
     private void Update()

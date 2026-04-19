@@ -73,6 +73,6 @@ public class WeighingScalePuzzle : MonoBehaviour
     {
         // Đợi 3 giây để người chơi kịp nhìn thấy thông báo thắng cuộc
         yield return new WaitForSeconds(3f);
-        SceneManager.LoadScene("SampleScene");
+        SceneReturnData.FinishStudyAndReturn();
     }
 }

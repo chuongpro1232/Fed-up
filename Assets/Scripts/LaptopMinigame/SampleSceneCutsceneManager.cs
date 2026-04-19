@@ -7,7 +7,8 @@ public class SampleSceneCutsceneManager : MonoBehaviour
     {
         // Tự động xoá trí nhớ của game mỗi lần ấn nút Play (khởi động game)
         PlayerPrefs.SetInt("LaptopPuzzleState", 0);
-        Debug.Log("Game started: Automatically reset LaptopPuzzleState to 0.");
+        PlayerPrefs.SetInt("CurrentDay", 1); // <--- ADDED THIS RESET
+        Debug.Log("Game started: Automatically reset LaptopPuzzleState to 0 and CurrentDay to 1.");
     }
 
     void Start()
