@@ -143,6 +143,26 @@ public class AtomHook : MonoBehaviour
         this.connectedHook = other;
         other.connectedHook = this;
 
+        // Auto-connect bất kỳ cặp móc câu nào còn trống mà đang nằm đè lên nhau giữa 2 Atom này (Hỗ trợ liên kết 2, 3)
+        foreach (var hA in this.parentAtom.hooks)
+        {
+            if (hA != this && hA.connectedHook == null)
+            {
+                foreach (var hB in other.parentAtom.hooks)
+                {
+                    if (hB != other && hB.connectedHook == null)
+                    {
+                        if (Vector2.Distance(hA.transform.position, hB.transform.position) < 0.1f)
+                        {
+                            hA.connectedHook = hB;
+                            hB.connectedHook = hA;
+                            break; // Tìm được chủ cho hA rồi thì test hA tiếp theo
+                        }
+                    }
+                }
+            }
+        }
+
         // Dàn trải các gậy nối nếu có liên kết đôi hoặc liên kết ba
         OrganizeBondsBetween(this.parentAtom, other.parentAtom);
         OnConnectionChanged?.Invoke();

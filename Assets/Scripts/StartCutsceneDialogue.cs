@@ -8,7 +8,11 @@ public class StartCutsceneDialogue : MonoBehaviour
     public Transform playerTransform;
     public Transform speakerPoint;
     public Camera mainCamera;
-    public ObjectiveUIManager objectiveUIManager;
+
+    [Header("Cutscene: Wake Up (Chỉ chạy ở State 0)")]
+    public Transform bedWaypoint;
+    public Transform standWaypoint;
+    public float walkSpeed = 2f;
 
     [Header("UI")]
     public RectTransform dialoguePanel;
@@ -22,11 +26,6 @@ public class StartCutsceneDialogue : MonoBehaviour
     [TextArea(2, 5)]
     public string[] dialogueLines;
 
-    [Header("Objective After Dialogue")]
-    public string objectiveTitle = "Current Objective";
-
-    [TextArea(2, 4)]
-    public string objectiveBody = "Go to the computer by the window. Choose Play or Study to proceed to the next event.";
 
     [Header("Position")]
     public Vector2 screenOffset = new Vector2(0f, 60f);
@@ -51,10 +50,6 @@ public class StartCutsceneDialogue : MonoBehaviour
             }
         }
 
-        if (objectiveUIManager != null)
-        {
-            objectiveUIManager.HideObjective();
-        }
     }
 
     private void Start()
@@ -84,10 +79,108 @@ public class StartCutsceneDialogue : MonoBehaviour
                 playerMovement.SetCanMove(true);
             }
 
-            ShowObjectivePanel();
             return;
         }
 
+        int state = PlayerPrefs.GetInt("LaptopPuzzleState", 0);
+        if (state == 0)
+        {
+            StartCoroutine(PlayIntroCutscene());
+        }
+        else
+        {
+            StartDialogue();
+        }
+    }
+
+    private System.Collections.IEnumerator PlayIntroCutscene()
+    {
+        cutsceneActive = true;
+        
+        if (playerMovement != null) playerMovement.SetCanMove(false);
+
+        // Tạo màn hình đen tàng hình bọc toàn màn hình
+        GameObject canvasObj = new GameObject("FadeCanvas");
+        Canvas c = canvasObj.AddComponent<Canvas>();
+        c.renderMode = RenderMode.ScreenSpaceOverlay;
+        c.sortingOrder = 999;
+        canvasObj.AddComponent<UnityEngine.UI.CanvasScaler>();
+
+        // Tạm thời tắt va chạm của người chơi để không bị văng ra khỏi giường
+        Collider2D playerCollider = null;
+        if (playerTransform != null)
+        {
+            playerCollider = playerTransform.GetComponent<Collider2D>();
+            if (playerCollider != null) playerCollider.enabled = false;
+        }
+
+        GameObject imageObj = new GameObject("BlackImage");
+        imageObj.transform.SetParent(canvasObj.transform, false);
+        UnityEngine.UI.Image img = imageObj.AddComponent<UnityEngine.UI.Image>();
+        img.color = Color.black;
+        
+        RectTransform rt = img.GetComponent<RectTransform>();
+        rt.anchorMin = Vector2.zero;
+        rt.anchorMax = Vector2.one;
+        rt.sizeDelta = Vector2.zero;
+
+        // Dịch chuyển người chơi lên giường (nằm)
+        if (playerTransform != null && bedWaypoint != null)
+        {
+            playerTransform.position = bedWaypoint.position;
+        }
+
+        // Hiện màu đen, đợi một tí cho ổn định
+        yield return new WaitForSeconds(1f);
+
+        // Bắt đầu sáng dần lên trong 2 giây
+        float fadeTime = 2f;
+        float elapsed = 0f;
+        while (elapsed < fadeTime)
+        {
+            elapsed += Time.deltaTime;
+            float alpha = Mathf.Lerp(1f, 0f, elapsed / fadeTime);
+            img.color = new Color(0, 0, 0, alpha);
+            yield return null;
+        }
+        Destroy(canvasObj); // Xóa Canvas sau khi màn hình đã sáng bừng
+
+        yield return new WaitForSeconds(0.5f);
+
+        // Bắt đầu tự động đi bộ ra giữa phòng
+        if (playerTransform != null && standWaypoint != null)
+        {
+            Animator anim = playerTransform.GetComponent<Animator>();
+            
+            while (Vector3.Distance(playerTransform.position, standWaypoint.position) > 0.05f)
+            {
+                Vector3 dir = (standWaypoint.position - playerTransform.position).normalized;
+                playerTransform.position = Vector3.MoveTowards(playerTransform.position, standWaypoint.position, walkSpeed * Time.deltaTime);
+
+                if (anim != null)
+                {
+                    anim.SetFloat("Horizontal", dir.x);
+                    anim.SetFloat("Vertical", dir.y);
+                    anim.SetFloat("Speed", 1f); // Giả lập đang đi bộ
+                }
+                yield return null;
+            }
+
+            // Dừng chân, đứng quay mặt xuống dưới (South)
+            if (anim != null)
+            {
+                anim.SetFloat("Horizontal", 0);
+                anim.SetFloat("Vertical", -1);
+                anim.SetFloat("Speed", 0f);
+            }
+        }
+        
+        yield return new WaitForSeconds(0.5f);
+
+        // Lúc này người chơi đã đi xog ra giữa phòng, bật lại va chạm
+        if (playerCollider != null) playerCollider.enabled = true;
+
+        // Bắt đầu hiện hội thoại
         StartDialogue();
     }
 
@@ -104,7 +197,7 @@ public class StartCutsceneDialogue : MonoBehaviour
             return;
         }
 
-        if (Input.anyKeyDown)
+        if (Input.GetKeyDown(KeyCode.Space))
         {
             NextLine();
         }
@@ -125,11 +218,6 @@ public class StartCutsceneDialogue : MonoBehaviour
         if (playerMovement != null)
         {
             playerMovement.SetCanMove(false);
-        }
-
-        if (objectiveUIManager != null)
-        {
-            objectiveUIManager.HideObjective();
         }
 
         if (dialoguePanel != null)
@@ -184,17 +272,6 @@ public class StartCutsceneDialogue : MonoBehaviour
         if (playerMovement != null)
         {
             playerMovement.SetCanMove(true);
-        }
-
-        ShowObjectivePanel();
-    }
-
-    private void ShowObjectivePanel()
-    {
-        if (objectiveUIManager != null)
-        {
-            objectiveUIManager.ShowObjective();
-            objectiveUIManager.SetObjective(objectiveTitle, objectiveBody);
         }
     }
 

@@ -28,10 +28,10 @@ public class SteamIconEvent : MonoBehaviour
 
     void Start()
     {
-        if (LaptopGameManager.Instance != null && LaptopGameManager.Instance.CurrentState != 0)
+        if (LaptopGameManager.Instance != null && LaptopGameManager.Instance.CurrentState != 1)
         {
             if (steamBackground != null) steamBackground.SetActive(false);
-            gameObject.SetActive(false); // Only show at the beginning
+            gameObject.SetActive(false); // Only show at State 1
             return;
         }
 
@@ -105,7 +105,7 @@ public class SteamIconEvent : MonoBehaviour
     {
         yield return new WaitForSeconds(5f); // Wait for 5s
         
-        if (LaptopGameManager.Instance != null) LaptopGameManager.Instance.CurrentState = 1; // Kích hoạt trạng thái chuyển qua SampleScene
+        if (LaptopGameManager.Instance != null) LaptopGameManager.Instance.CurrentState = 2; // Kích hoạt trạng thái 2 để về phòng lảm nhảm
         
         SceneManager.LoadScene("SampleScene");
     }

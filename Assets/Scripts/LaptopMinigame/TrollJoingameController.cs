@@ -13,6 +13,12 @@ public class TrollJoingameController : MonoBehaviour
     private int cornerIndex = 0;
     private Vector3[] corners;
 
+    [Header("Giới hạn khu vực màn hình Laptop")]
+    public float minX = -3.8f;
+    public float maxX = 4.0f;
+    public float minY = -0.8f;
+    public float maxY = 2.6f;
+
     private Vector3 originalScale;
 
     void Start()
@@ -25,27 +31,40 @@ public class TrollJoingameController : MonoBehaviour
         if (csgoBackground != null) csgoBackground.SetActive(false);
         if (exitButton != null) exitButton.gameObject.SetActive(false);
 
-        // Calculate 4 corners within orthographic bounds
-        Camera cam = Camera.main;
-        if (cam != null && exitButton != null)
+        if (exitButton != null)
         {
-            float vertExtent = cam.orthographicSize;
-            float horzExtent = vertExtent * Screen.width / Screen.height;
-
-            Vector3 camPos = cam.transform.position;
+            float padding = 0.5f;
 
             corners = new Vector3[5];
-            corners[0] = new Vector3(camPos.x - horzExtent + 2f, camPos.y + vertExtent - 2f, exitButton.position.z); // Top-Left
-            corners[1] = new Vector3(camPos.x + horzExtent - 2f, camPos.y + vertExtent - 2f, exitButton.position.z); // Top-Right
-            corners[2] = new Vector3(camPos.x + horzExtent - 2f, camPos.y - vertExtent + 2f, exitButton.position.z); // Bot-Right
-            corners[3] = new Vector3(camPos.x - horzExtent + 2f, camPos.y - vertExtent + 2f, exitButton.position.z); // Bot-Left
-            corners[4] = new Vector3(camPos.x, camPos.y, exitButton.position.z); // Center
+            // 4 góc của màn hình Laptop (có thu hẹp 1 chút padding để nút X không bị lẹm ra ngoài viền)
+            corners[0] = new Vector3(minX + padding, maxY - padding, exitButton.position.z); // Top-Left
+            corners[1] = new Vector3(maxX - padding, maxY - padding, exitButton.position.z); // Top-Right
+            corners[2] = new Vector3(maxX - padding, minY + padding, exitButton.position.z); // Bot-Right
+            corners[3] = new Vector3(minX + padding, minY + padding, exitButton.position.z); // Bot-Left
+            
+            // Lần click cuối (tâm màn hình)
+            corners[4] = new Vector3((minX + maxX)/2f, (minY + maxY)/2f, exitButton.position.z); // Center
         }
 
-        if (LaptopGameManager.Instance.CurrentState == 2)
+        int state = LaptopGameManager.Instance.CurrentState;
+        
+        if (state == 2)
         {
-            // Dự phòng nếu load lại scene
+            // Trạng thái 2: Kích hoạt đồng hồ chờ để vọt ra cái bảng nhỏ Troll
             StartTrollTimer();
+        }
+        else if (state == 3)
+        {
+            // Trạng thái 3: Nếu Cheat thẳng vào State 3, sẽ hiện ngay bảng CSGO to tướng
+            if (joingameParent != null) joingameParent.transform.localScale = Vector3.zero;
+            if (csgoBackground != null) csgoBackground.SetActive(true);
+            if (exitButton != null) 
+            {
+                exitButton.gameObject.SetActive(true);
+                exitButton.position = corners[0]; // Đặt tạm nút tĩnh ở góc trái trên
+            }
+            // Đẩy Index lên max để click 1 nhát là đóng luôn (thoát State 3)
+            cornerIndex = 99;
         }
     }
 
@@ -61,7 +80,7 @@ public class TrollJoingameController : MonoBehaviour
         {
             joingameParent.transform.localScale = originalScale;
             if (exitButton != null) exitButton.gameObject.SetActive(true);
-            LaptopGameManager.Instance.CurrentState = 3;
+            // Vẫn giữ là State 2 cho tới khi người chơi bấm xong nút X né tránh
         }
     }
 
@@ -74,18 +93,29 @@ public class TrollJoingameController : MonoBehaviour
         }
         else
         {
-            // Last click was in the center
-            if (joingameParent != null) joingameParent.transform.localScale = Vector3.zero;
-            if (csgoBackground != null) csgoBackground.SetActive(true);
-            
-            StartCoroutine(ReturnToSampleScene());
+            if (LaptopGameManager.Instance.CurrentState == 2)
+            {
+                // Vượt qua ải Troll nút chạy nhảy (State 2) -> Bật bảng CSGO bự (State 3)
+                LaptopGameManager.Instance.CurrentState = 3;
+                
+                if (joingameParent != null) joingameParent.transform.localScale = Vector3.zero;
+                if (csgoBackground != null) csgoBackground.SetActive(true);
+                
+                if (exitButton != null)
+                {
+                    exitButton.position = corners[0]; // Di chuyển nút X về góc trái trên của bảng CSGO bự
+                }
+                
+                cornerIndex = 99; // Lần click tiếp theo sẽ chui xuống nhánh else bên dưới
+            }
+            else if (LaptopGameManager.Instance.CurrentState == 3)
+            {
+                // Lần click cuối cùng ở bảng bự: Tắt sạch quảng cáo troll và chơi tiếp game cân
+                if (csgoBackground != null) csgoBackground.SetActive(false);
+                if (exitButton != null) exitButton.gameObject.SetActive(false);
+                
+                // Ở đây State vẫn là 3, người chơi bắt đầu ung dung giải đó cái Cân
+            }
         }
-    }
-
-    IEnumerator ReturnToSampleScene()
-    {
-        yield return new WaitForSeconds(3f); // Display CS:GO for 3 seconds
-        LaptopGameManager.Instance.CurrentState = 4;
-        SceneManager.LoadScene("SampleScene");
     }
 }

@@ -80,7 +80,7 @@ public class DialogueManager : MonoBehaviour
         if (Time.unscaledTime < ignoreInputUntil)
             return;
 
-        if (Input.anyKeyDown)
+        if (Input.GetKeyDown(KeyCode.Space))
         {
             if (!lineFullyShown)
             {

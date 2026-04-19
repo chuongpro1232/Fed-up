@@ -1782,16 +1782,16 @@ MonoBehaviour:
   timeoutScene: Classroom
   ruleString: 'Rules of the game:
 
-    
+
 
     - Drag and drop to connect the molecules.
 
-    
+
 
     -
     No hooks can be left empty.
 
-    
+
 
     - A single molecule must be formed.'
   ruleText: {fileID: 873438516}
@@ -2036,7 +2036,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1358192131
 Transform:
   m_ObjectHideFlags: 0
@@ -2790,7 +2790,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6188221321172067100, guid: 2152b338dfe8aee4e892a7378d13e597, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.84261245
+      value: -1.79
       objectReference: {fileID: 0}
     - target: {fileID: 6188221321172067100, guid: 2152b338dfe8aee4e892a7378d13e597, type: 3}
       propertyPath: m_LocalPosition.z

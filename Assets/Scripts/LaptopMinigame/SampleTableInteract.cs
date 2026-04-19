@@ -9,15 +9,17 @@ public class SampleTableInteract : MonoBehaviour
     {
         int state = PlayerPrefs.GetInt("LaptopPuzzleState", 0);
         
-        // Progress states if returning from cutscenes
-        if (state == 1)
+        if (state == 0)
         {
-            PlayerPrefs.SetInt("LaptopPuzzleState", 2);
+            // Lần đầu bước tới bàn: Kích State lên 1 để vào Laptop gặp Steam Icon
+            PlayerPrefs.SetInt("LaptopPuzzleState", 1);
         }
         else if (state == 4)
         {
+            // Lần về cuối cùng: Kích lên 5 để không bị lặp lại thoại
             PlayerPrefs.SetInt("LaptopPuzzleState", 5);
         }
+        // Riêng State 2 (Đã xem xong Steam) thì giữ nguyên State 2 để chui vào Laptop gặp Troll Game
         
         SceneManager.LoadScene("Laptop");
     }

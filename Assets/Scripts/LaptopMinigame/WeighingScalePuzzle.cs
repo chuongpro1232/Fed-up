@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using System.Collections.Generic;
 
 public class AtomSlot : MonoBehaviour
@@ -60,8 +61,18 @@ public class WeighingScalePuzzle : MonoBehaviour
 
         if (win && winCanvas != null)
         {
-            if (LaptopGameManager.Instance != null) LaptopGameManager.Instance.CurrentState = 6;
+            if (LaptopGameManager.Instance != null) LaptopGameManager.Instance.CurrentState = 4;
             winCanvas.gameObject.SetActive(true);
+            Debug.Log("Puzzle Complete! State set to 4");
+            
+            StartCoroutine(ReturnToSampleScene());
         }
+    }
+
+    private System.Collections.IEnumerator ReturnToSampleScene()
+    {
+        // Đợi 3 giây để người chơi kịp nhìn thấy thông báo thắng cuộc
+        yield return new WaitForSeconds(3f);
+        SceneManager.LoadScene("SampleScene");
     }
 }

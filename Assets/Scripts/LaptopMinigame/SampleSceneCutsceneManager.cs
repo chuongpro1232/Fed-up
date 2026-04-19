@@ -14,7 +14,7 @@ public class SampleSceneCutsceneManager : MonoBehaviour
     {
         int state = PlayerPrefs.GetInt("LaptopPuzzleState", 0);
         
-        if (state == 1)
+        if (state == 2)
         {
             PlayDialogue(new string[] { "Mình lại mất tập trung nữa rồi..." });
         }
