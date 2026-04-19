@@ -1739,6 +1739,7 @@ MonoBehaviour:
   speakerName: Player
   dialogueLines:
   - Today I need to finish my homework to get ready for class tomorow. No more games
+  - I need to go to my table over by the window and get ready
   screenOffset: {x: 0, y: 60}
 --- !u!4 &630553358
 Transform:
