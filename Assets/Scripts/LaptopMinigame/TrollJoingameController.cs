@@ -7,14 +7,23 @@ public class TrollJoingameController : MonoBehaviour
     public GameObject joingameParent; // The overall group for Joingame
     public GameObject csgoBackground; // The CSGO image BG
     public Transform exitButton;
+    [Tooltip("Thời gian chờ trước khi Troll CSGO hiện ra")]
+    public float waitDelay = 20f;
 
     private int cornerIndex = 0;
     private Vector3[] corners;
 
+    private Vector3 originalScale;
+
     void Start()
     {
-        if (joingameParent != null) joingameParent.SetActive(false);
+        if (joingameParent != null)
+        {
+            originalScale = joingameParent.transform.localScale;
+            joingameParent.transform.localScale = Vector3.zero;
+        }
         if (csgoBackground != null) csgoBackground.SetActive(false);
+        if (exitButton != null) exitButton.gameObject.SetActive(false);
 
         // Calculate 4 corners within orthographic bounds
         Camera cam = Camera.main;
@@ -47,10 +56,11 @@ public class TrollJoingameController : MonoBehaviour
 
     IEnumerator WaitAndShowJoingame()
     {
-        yield return new WaitForSeconds(20f);
+        yield return new WaitForSeconds(waitDelay);
         if (joingameParent != null)
         {
-            joingameParent.SetActive(true);
+            joingameParent.transform.localScale = originalScale;
+            if (exitButton != null) exitButton.gameObject.SetActive(true);
             LaptopGameManager.Instance.CurrentState = 3;
         }
     }
@@ -65,7 +75,7 @@ public class TrollJoingameController : MonoBehaviour
         else
         {
             // Last click was in the center
-            if (joingameParent != null) joingameParent.SetActive(false);
+            if (joingameParent != null) joingameParent.transform.localScale = Vector3.zero;
             if (csgoBackground != null) csgoBackground.SetActive(true);
             
             StartCoroutine(ReturnToSampleScene());
