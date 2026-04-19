@@ -30,6 +30,7 @@ public class SteamIconEvent : MonoBehaviour
     {
         if (LaptopGameManager.Instance != null && LaptopGameManager.Instance.CurrentState != 0)
         {
+            if (steamBackground != null) steamBackground.SetActive(false);
             gameObject.SetActive(false); // Only show at the beginning
             return;
         }

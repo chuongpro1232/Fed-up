@@ -42,6 +42,18 @@ public class ComputerMenuUI : MonoBehaviour
 
     public void GoToStudy()
     {
+        int state = PlayerPrefs.GetInt("LaptopPuzzleState", 0);
+        
+        // Progress states if returning from cutscenes
+        if (state == 1)
+        {
+            PlayerPrefs.SetInt("LaptopPuzzleState", 2);
+        }
+        else if (state == 4)
+        {
+            PlayerPrefs.SetInt("LaptopPuzzleState", 5);
+        }
+
         SceneManager.LoadScene("Laptop");
     }
 
