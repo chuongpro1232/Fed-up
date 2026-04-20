@@ -13,6 +13,14 @@ public class AtomHook : MonoBehaviour
     [Tooltip("Khoảng cách hít dính để tự động nối 2 móc câu lại với nhau")]
     public float snapDistance = 1.0f;
     
+    [Header("Hình ảnh liên kết")]
+    [Tooltip("Kéo thả hình ảnh Line'.png vào đây. Khi nối xong sẽ tự động hiện sợi dây này.")]
+    public Sprite bondLineSprite;
+    
+    [Tooltip("Tùy chỉnh độ dài của sợi dây. Kéo nhỏ lại nếu dây bị đâm thủng ra ngoài viền Atom (ví dụ: 0.5, 0.6)")]
+    public float bondLineLengthMultiplier = 0.5f;
+    
+    private GameObject visualLineObj; // Chứa sợi dây
     private bool isDragging = false;
     private float radius = 0f;
     private float initialAngleOffset = 0f;
@@ -173,6 +181,18 @@ public class AtomHook : MonoBehaviour
         if (connectedHook != null)
         {
             MoleculeAtom otherAtom = connectedHook.parentAtom;
+            
+            // Xóa hình ảnh gậy nối khi đứt liên kết
+            if (this.visualLineObj != null) Destroy(this.visualLineObj);
+            if (connectedHook.visualLineObj != null) Destroy(connectedHook.visualLineObj);
+            
+            // Bật lại hình ảnh cái móc (chìa khóa cam) để báo hiệu đang chờ kết nối
+            SpriteRenderer srThis = this.GetComponent<SpriteRenderer>();
+            if (srThis != null) srThis.enabled = true;
+            
+            SpriteRenderer srOther = connectedHook.GetComponent<SpriteRenderer>();
+            if (srOther != null) srOther.enabled = true;
+            
             connectedHook.connectedHook = null;
             this.connectedHook = null;
             
@@ -234,6 +254,76 @@ public class AtomHook : MonoBehaviour
             hB.transform.position = hA.transform.position; // Nối cứng vào hA
             float angleB = Mathf.Atan2(-baseDir.y, -baseDir.x) * Mathf.Rad2Deg;
             hB.transform.eulerAngles = new Vector3(0, 0, angleB + hB.initialAngleOffset);
+
+            // SINH RA VÀ CĂN CHỈNH SỢI DÂY NỐI DỰA TRÊN SPRITE LINE'
+            if (hA.visualLineObj == null && hA.bondLineSprite != null)
+            {
+                hA.visualLineObj = new GameObject("VisualBondLine");
+                hA.visualLineObj.transform.parent = hA.transform;
+                SpriteRenderer hookSr = hA.GetComponent<SpriteRenderer>();
+                SpriteRenderer atomSr = atomA.GetComponent<SpriteRenderer>();
+                SpriteRenderer lineSr = hA.visualLineObj.AddComponent<SpriteRenderer>();
+                lineSr.sprite = hA.bondLineSprite;
+                
+                // Cố gắng lấy Sorting Layer chuẩn, nếu không có thì đẩy Order lên 99 để chắc chắn nó hiện lên trên bảng
+                if (hookSr != null) {
+                    lineSr.sortingLayerID = hookSr.sortingLayerID;
+                    lineSr.sortingOrder = hookSr.sortingOrder - 1; 
+                } else if (atomSr != null) {
+                    lineSr.sortingLayerID = atomSr.sortingLayerID;
+                    lineSr.sortingOrder = atomSr.sortingOrder - 1;
+                } else {
+                    lineSr.sortingOrder = 99; // Lộ thiên luôn
+                }
+            }
+
+            if (hA.visualLineObj != null)
+            {
+                hA.visualLineObj.transform.position = hA.transform.position;
+                
+                // Trừ đi 90 độ vì hình Line' gốc của bạn đang vẽ thẳng đứng dọc thay vì nằm ngang
+                hA.visualLineObj.transform.eulerAngles = new Vector3(0, 0, angleA - 90f);
+
+                // Kéo giãn sợi dây tự động dài ra chạm vào 2 tâm của nguyên tử
+                float distanceAtoB = Vector3.Distance(atomA.transform.position, atomB.transform.position);
+                SpriteRenderer lineSr = hA.visualLineObj.GetComponent<SpriteRenderer>();
+                if (lineSr.sprite != null)
+                {
+                    float spriteHeight = lineSr.sprite.bounds.size.y;
+                    if (spriteHeight > 0.001f)
+                    {
+                        // Độ dài gốc = khoảng cách 2 nguyên tử chia cho chiều cao gốc của Sprite
+                        float baseStretch = distanceAtoB / spriteHeight;
+                        
+                        // Loại bỏ việc bị phóng to quá mức do ảnh hưởng từ Scale của các cục mẹ (Atom)
+                        float lossyY = hA.transform.lossyScale.y;
+                        if (lossyY > 0.001f)
+                        {
+                            baseStretch = baseStretch / lossyY;
+                        }
+
+                        // Nhân thêm với hệ số thu ngắn mà bạn tự chỉnh ở ngoài Inspector
+                        float finalStretch = baseStretch * hA.bondLineLengthMultiplier;
+                        
+                        // Rút gọn lại X để bề ngang của vạch cũng không bị khổng lồ
+                        float lossyX = hA.transform.lossyScale.x;
+                        float finalWidth = 1f;
+                        if (lossyX > 0.001f) finalWidth = 1f / lossyX;
+                        
+                        // Áp dụng scale
+                        hA.visualLineObj.transform.localScale = new Vector3(finalWidth, finalStretch, 1f);
+                        
+                        Debug.Log($"Khoảng cách: {distanceAtoB} | Hệ số nhân: {hA.bondLineLengthMultiplier} | Scale Y áp dụng: {finalStretch}");
+                    }
+                }
+                
+                // Ẩn tiệt hình ảnh cái móc màu cam cũ đi để cọng dây trắng chiếm chỗ hoàn toàn
+                SpriteRenderer srA = hA.GetComponent<SpriteRenderer>();
+                if (srA != null) srA.enabled = false;
+                
+                SpriteRenderer srB = hB.GetComponent<SpriteRenderer>();
+                if (srB != null) srB.enabled = false;
+            }
         }
     }
 }

@@ -28,13 +28,18 @@ public class SteamIconEvent : MonoBehaviour
 
     void Start()
     {
-        if (LaptopGameManager.Instance != null && LaptopGameManager.Instance.CurrentState != 1)
+        int currentState = LaptopGameManager.Instance != null ? LaptopGameManager.Instance.CurrentState : -1;
+        Debug.Log("STEAM ICON EVENT START - Current State is: " + currentState);
+
+        if (LaptopGameManager.Instance != null && currentState != 1)
         {
             if (steamBackground != null) steamBackground.SetActive(false);
             gameObject.SetActive(false); // Only show at State 1
+            Debug.Log("STEAM ICON EVENT - Hiding because State != 1");
             return;
         }
 
+        Debug.Log("STEAM ICON EVENT - Starting Coroutine for Steam Icon");
         if (steamBackground != null) steamBackground.SetActive(false);
         
         // Ẩn lúc ban đầu
@@ -46,8 +51,10 @@ public class SteamIconEvent : MonoBehaviour
 
     IEnumerator WaitToStartMoving()
     {
+        Debug.Log("STEAM ICON EVENT - Waiting " + startDelay + " seconds before showing sprite.");
         yield return new WaitForSeconds(startDelay);
         
+        Debug.Log("STEAM ICON EVENT - Turning ON SpriteRenderer to make it visible.");
         // Hiện lên và bắt đầu di chuyển
         SpriteRenderer sr = gameObject.GetComponent<SpriteRenderer>();
         if (sr != null) sr.enabled = true;

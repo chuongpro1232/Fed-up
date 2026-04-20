@@ -477,8 +477,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e606a9053e9a4e4a8d47bf3bd622826, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  forceState: 0
-  forcedStateValue: 0
+  state3Graphics: []
 --- !u!4 &292453932
 Transform:
   m_ObjectHideFlags: 0
@@ -1917,7 +1916,7 @@ MonoBehaviour:
   joingameParent: {fileID: 1321244149}
   csgoBackground: {fileID: 1146513626}
   exitButton: {fileID: 1655721056}
-  waitDelay: 20
+  waitDelay: 3.18
   minX: -3.8
   maxX: 4
   minY: -0.8
@@ -2322,7 +2321,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   steamBackground: {fileID: 619527369}
   moveSpeed: 3
-  startDelay: 10.4
+  startDelay: 1
   backgroundShowTime: 7
   minX: -3.8
   maxX: 4

@@ -69,6 +69,18 @@ public class ComputerMenuUI : MonoBehaviour
     public void GoToStudy()
     {
         SaveReturnData();
+
+        // Đồng bộ logic tăng State (giống với SampleTableInteract cũ)
+        int state = PlayerPrefs.GetInt("LaptopPuzzleState", 0);
+        if (state == 0)
+        {
+            PlayerPrefs.SetInt("LaptopPuzzleState", 1);
+        }
+        else if (state == 4)
+        {
+            PlayerPrefs.SetInt("LaptopPuzzleState", 5);
+        }
+
         SceneManager.LoadScene("Laptop");
     }
 }

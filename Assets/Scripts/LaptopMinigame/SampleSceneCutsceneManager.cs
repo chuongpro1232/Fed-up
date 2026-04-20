@@ -19,6 +19,11 @@ public class SampleSceneCutsceneManager : MonoBehaviour
         {
             PlayDialogue(new string[] { "Mình lại mất tập trung nữa rồi..." });
         }
+        else if (state == 3)
+        {
+            // Trả về đoạn thoại sau khi bị trêu tức lần 1
+            PlayDialogue(new string[] { "Cái quái gì đang xảy ra với cái máy này vậy?!" });
+        }
         else if (state == 4)
         {
             PlayDialogue(new string[] { "Tôi chán ngấy với cái việc học bài xong hiện ra những thứ này rồi!" });

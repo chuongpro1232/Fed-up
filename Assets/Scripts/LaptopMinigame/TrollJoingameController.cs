@@ -23,8 +23,16 @@ public class TrollJoingameController : MonoBehaviour
 
     void Start()
     {
+        if (csgoBackground == null) 
+        {
+            Transform csgoObj = transform.parent != null ? transform.parent.Find("csgo_0") : null;
+            if (csgoObj != null) csgoBackground = csgoObj.gameObject;
+        }
+
         if (joingameParent != null)
         {
+            // Bật active phòng khi LaptopGameManager lỡ tắt cứng nó ở state trước.
+            joingameParent.SetActive(true);
             originalScale = joingameParent.transform.localScale;
             joingameParent.transform.localScale = Vector3.zero;
         }
@@ -55,15 +63,18 @@ public class TrollJoingameController : MonoBehaviour
         }
         else if (state == 3)
         {
-            // Trạng thái 3: Nếu Cheat thẳng vào State 3, sẽ hiện ngay bảng CSGO to tướng
+            Debug.Log("TROLL CONTROLLER START - State 3 detected! Showing CSGO Màn hình lớn.");
+            // Trạng thái 3: Bước thẳng vào là CÓ SẴN bảng CSGO to tướng chờ bấm tắt
             if (joingameParent != null) joingameParent.transform.localScale = Vector3.zero;
             if (csgoBackground != null) csgoBackground.SetActive(true);
+            else Debug.LogError("csgoBackground is missing! Kéo csgo_0 vào biến csgoBackground!!");
+            
             if (exitButton != null) 
             {
                 exitButton.gameObject.SetActive(true);
-                exitButton.position = corners[0]; // Đặt tạm nút tĩnh ở góc trái trên
+                if (corners != null && corners.Length > 0) exitButton.position = corners[0]; // Đặt cục X ở góc trái trên
             }
-            // Đẩy Index lên max để click 1 nhát là đóng luôn (thoát State 3)
+            // Đẩy Index lên max để click 1 nhát là đóng luôn (thoát State 3 CSGO)
             cornerIndex = 99;
         }
     }
@@ -78,6 +89,7 @@ public class TrollJoingameController : MonoBehaviour
         yield return new WaitForSeconds(waitDelay);
         if (joingameParent != null)
         {
+            joingameParent.SetActive(true);
             joingameParent.transform.localScale = originalScale;
             if (exitButton != null) exitButton.gameObject.SetActive(true);
             // Vẫn giữ là State 2 cho tới khi người chơi bấm xong nút X né tránh
@@ -86,36 +98,50 @@ public class TrollJoingameController : MonoBehaviour
 
     public void OnExitClicked()
     {
-        if (cornerIndex < corners.Length)
+        Debug.Log("EXIT CLIKED! Current Index: " + cornerIndex);
+        // Khắc phục lỗi mảng corners bị Null khi nút exitButton lỡ bị rớt mất tham chiếu trong Inspector
+        if (corners == null) corners = new Vector3[0];
+
+        if (cornerIndex < corners.Length && exitButton != null)
         {
             exitButton.position = corners[cornerIndex];
             cornerIndex++;
         }
         else
         {
-            if (LaptopGameManager.Instance.CurrentState == 2)
+            if (cornerIndex == 5)
             {
-                // Vượt qua ải Troll nút chạy nhảy (State 2) -> Bật bảng CSGO bự (State 3)
-                LaptopGameManager.Instance.CurrentState = 3;
-                
-                if (joingameParent != null) joingameParent.transform.localScale = Vector3.zero;
-                if (csgoBackground != null) csgoBackground.SetActive(true);
-                
-                if (exitButton != null)
-                {
-                    exitButton.position = corners[0]; // Di chuyển nút X về góc trái trên của bảng CSGO bự
-                }
-                
-                cornerIndex = 99; // Lần click tiếp theo sẽ chui xuống nhánh else bên dưới
+                Debug.Log("State 2: Reached end of small popup clicks. Showing Big CSGO (no exit button) and waiting 3 seconds.");
+                cornerIndex++; // Increment to lock further clicks
+                StartCoroutine(ShowBigCSGOAndKick());
             }
-            else if (LaptopGameManager.Instance.CurrentState == 3)
+            else if (cornerIndex == 99 && LaptopGameManager.Instance.CurrentState == 3)
             {
-                // Lần click cuối cùng ở bảng bự: Tắt sạch quảng cáo troll và chơi tiếp game cân
+                // Hành động ở State 3: Bấm X để tắt CSGO và bắt đầu màn chơi cái cân
+                Debug.Log("State 3: Clicked Big CSGO X -> Hiding Big CSGO and showing Balance Scale!");
+                
                 if (csgoBackground != null) csgoBackground.SetActive(false);
                 if (exitButton != null) exitButton.gameObject.SetActive(false);
                 
-                // Ở đây State vẫn là 3, người chơi bắt đầu ung dung giải đó cái Cân
+                // Trigger lại GameManager để hiện cân
+                LaptopGameManager.Instance.gameObject.SendMessage("Start", SendMessageOptions.DontRequireReceiver);
             }
         }
+    }
+
+    IEnumerator ShowBigCSGOAndKick()
+    {
+        // Bung bảng bự che chết màn hình
+        if (joingameParent != null) joingameParent.transform.localScale = Vector3.zero;
+        if (csgoBackground != null) csgoBackground.SetActive(true);
+        if (exitButton != null) exitButton.gameObject.SetActive(false); // Dấu luôn nút X, không cho người chơi tắt
+
+        // Tra tấn 3 giây
+        yield return new WaitForSeconds(3f);
+
+        // Sau đó tống ra phòng
+        Debug.Log("3 seconds passed -> Kick to SampleScene and set State = 3");
+        LaptopGameManager.Instance.CurrentState = 3;
+        SceneManager.LoadScene("SampleScene");
     }
 }

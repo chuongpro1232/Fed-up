@@ -168,7 +168,7 @@ Transform:
   m_GameObject: {fileID: 2657237689098148141}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: -0.7071068, w: 0.7071068}
-  m_LocalPosition: {x: -0.684, y: 0.019, z: 0}
+  m_LocalPosition: {x: -0.756, y: 0.019, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -243,7 +243,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   parentAtom: {fileID: 0}
   connectedHook: {fileID: 0}
-  snapDistance: 1
+  snapDistance: 0.5
+  bondLineSprite: {fileID: 2151434520407937539, guid: 0df40f7fececa4f4fb8b142828cbab4f, type: 3}
+  bondLineLengthMultiplier: 0.5
 --- !u!70 &1518816098902210152
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -309,7 +311,7 @@ Transform:
   m_GameObject: {fileID: 4511729403809665087}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0.7071068, w: 0.7071068}
-  m_LocalPosition: {x: 0.699, y: -0.018, z: 0}
+  m_LocalPosition: {x: 0.755, y: -0.018, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -384,7 +386,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   parentAtom: {fileID: 0}
   connectedHook: {fileID: 0}
-  snapDistance: 1
+  snapDistance: 0.5
+  bondLineSprite: {fileID: 2151434520407937539, guid: 0df40f7fececa4f4fb8b142828cbab4f, type: 3}
+  bondLineLengthMultiplier: 0.5
 --- !u!70 &8922327846872350813
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
