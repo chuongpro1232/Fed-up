@@ -478,7 +478,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   forceState: 0
-  forcedStateValue: 3
+  forcedStateValue: 0
 --- !u!4 &292453932
 Transform:
   m_ObjectHideFlags: 0
