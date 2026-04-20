@@ -13,6 +13,22 @@ public class CameraFollow : MonoBehaviour
     [Tooltip("Offset for the camera. Z is left at -10 to see 2D objects.")]
     public Vector3 offset = new Vector3(0, 0, -10f);
 
+    [Header("Zoom Settings")]
+    public float zoomSpeed = 2f;
+    private float defaultZoom;
+    private float targetZoom;
+    private Camera cam;
+
+    private void Start()
+    {
+        cam = GetComponent<Camera>();
+        if (cam != null)
+        {
+            defaultZoom = cam.orthographicSize;
+            targetZoom = defaultZoom;
+        }
+    }
+
     // This is used by Vector3.SmoothDamp as a reference to keep track of current velocity.
     private Vector3 velocity = Vector3.zero;
 
@@ -28,5 +44,23 @@ public class CameraFollow : MonoBehaviour
 
         // Smoothly glide the camera from its current position to the target position
         transform.position = Vector3.SmoothDamp(transform.position, targetPosition, ref velocity, smoothTime);
+
+        // Smoothly zoom the camera
+        if (cam != null)
+        {
+            cam.orthographicSize = Mathf.Lerp(cam.orthographicSize, targetZoom, Time.deltaTime * zoomSpeed);
+        }
+    }
+
+    public void SetZoom(float newZoom, float speed = 2f)
+    {
+        targetZoom = newZoom;
+        zoomSpeed = speed;
+    }
+
+    public void ResetZoom(float speed = 2f)
+    {
+        targetZoom = defaultZoom;
+        zoomSpeed = speed;
     }
 }

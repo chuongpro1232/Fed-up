@@ -2,6 +2,22 @@ using UnityEngine;
 
 public class SampleSceneCutsceneManager : MonoBehaviour
 {
+    [Header("Stage Dialogues")]
+    [TextArea(2, 4)]
+    public string[] stage1EndLines = new string[] { "I am losing focus. I need to focus on my study and delete CS2." };
+
+    [TextArea(2, 4)]
+    public string[] stage2EndLines = new string[] { "What on earth is wrong with this machine?!" };
+
+    [Header("Aim Trainer Dialogues")]
+    [TextArea(2, 4)]
+    public string[] betterScoreLines = new string[] { "This is much better! I got {0} points, which beats my old {1}." };
+    [TextArea(2, 4)]
+    public string[] worseScoreLines = new string[] { "I did slightly worse than last time... I only got {0}." };
+    [TextArea(2, 4)]
+    public string[] tieScoreLines = new string[] { "Not bad, I got {0} points, just like before." };
+
+
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     static void AutoResetOnPlay()
     {
@@ -13,20 +29,39 @@ public class SampleSceneCutsceneManager : MonoBehaviour
 
     void Start()
     {
+        // First check if coming exactly from Aim Trainer Exit
+        if (SceneReturnData.justFinishedAimTrainer)
+        {
+            SceneReturnData.justFinishedAimTrainer = false;
+            
+            int score = SceneReturnData.latestAimTrainerScore;
+            int prevScore = SceneReturnData.previousAimTrainerScore;
+
+            string[] chosenLines;
+            if (score > prevScore || prevScore == 0) chosenLines = betterScoreLines;
+            else if (score < prevScore) chosenLines = worseScoreLines;
+            else chosenLines = tieScoreLines;
+
+            // Replace {0} with current score, and {1} with previous score
+            string[] formattedLines = new string[chosenLines.Length];
+            for (int i = 0; i < chosenLines.Length; i++)
+            {
+                formattedLines[i] = chosenLines[i].Replace("{0}", score.ToString()).Replace("{1}", prevScore.ToString());
+            }
+
+            PlayDialogue(formattedLines);
+            return; // Don't process laptop puzzle states
+        }
+
         int state = PlayerPrefs.GetInt("LaptopPuzzleState", 0);
         
         if (state == 2)
         {
-            PlayDialogue(new string[] { "Mình lại mất tập trung nữa rồi..." });
+            PlayDialogue(stage1EndLines);
         }
         else if (state == 3)
         {
-            // Trả về đoạn thoại sau khi bị trêu tức lần 1
-            PlayDialogue(new string[] { "Cái quái gì đang xảy ra với cái máy này vậy?!" });
-        }
-        else if (state == 4)
-        {
-            PlayDialogue(new string[] { "Tôi chán ngấy với cái việc học bài xong hiện ra những thứ này rồi!" });
+            PlayDialogue(stage2EndLines);
         }
     }
 

@@ -1974,6 +1974,10 @@ MonoBehaviour:
   - Today I need to finish my homework to get ready for class tomorow. No more games
   - I need to go to my table over there by the window and get ready to study
   - 'I can go straight to study or maybe a little bit aim trainnig for my CS2 '
+  finalStudyLines:
+  - I am so fed up with studying and these distractions!
+  - I just hope that tomorrow test would be what I had studied today.
+  - Time to get to bed and get ready for tomorrow
   screenOffset: {x: 0, y: 60}
 --- !u!4 &630553358
 Transform:
@@ -4262,6 +4266,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6875b036fb739e349b6b379779d70ce4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  stage1EndLines:
+  - I am losing focus. I need to focus on my study and delete CS2.
+  stage2EndLines:
+  - What on earth is wrong with this machine?!
+  - Need to focus to study chemistry now.
 --- !u!4 &1815807018
 Transform:
   m_ObjectHideFlags: 0
@@ -6411,6 +6420,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2092369303}
+  - component: {fileID: 2092369304}
   m_Layer: 0
   m_Name: DialogueManager
   m_TagString: Untagged
@@ -6433,6 +6443,30 @@ Transform:
   m_Children: []
   m_Father: {fileID: 2109071199}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2092369304
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2092369302}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 03863514cdd52d84fbed410409e4fbc1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dialoguePanel: {fileID: 2020331171}
+  speakerNameText: {fileID: 1875089420}
+  dialogueBodyText: {fileID: 2004257460}
+  continueText: {fileID: 1428325898}
+  playerMovement: {fileID: 1764314527}
+  mainCamera: {fileID: 519420031}
+  typeSpeed: 0.03
+  audioSource: {fileID: 0}
+  typeBlipClip: {fileID: 0}
+  playBlipEveryNLetters: 2
+  blipVolume: 0.5
+  screenOffset: {x: 0, y: 60, z: 0}
 --- !u!1 &2109071198
 GameObject:
   m_ObjectHideFlags: 0
@@ -6463,8 +6497,8 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 630553358}
   - {fileID: 2092369303}
+  - {fileID: 630553358}
   - {fileID: 99364389}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

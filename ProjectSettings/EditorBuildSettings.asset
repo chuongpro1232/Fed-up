@@ -20,6 +20,12 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/MiniGameMath.unity
     guid: 6465003f07b481148beabd5051e08665
+  - enabled: 1
+    path: Assets/Scenes/BlackBoard.unity
+    guid: 89132a2b93a2b1847964f7ab2f7c972a
+  - enabled: 1
+    path: Assets/Scenes/Net.unity
+    guid: e5f63d0302baf794ca97a892583792e1
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   m_UseUCBPForAssetBundles: 0

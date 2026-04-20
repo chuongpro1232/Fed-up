@@ -10,6 +10,16 @@ public static class SceneReturnData
     // New flag to handle bedtime cutscene
     public static bool hasFinishedStudy = false;
 
+    // Aim Trainer tracking
+    public static bool justFinishedAimTrainer = false;
+    public static int latestAimTrainerScore = 0;
+    public static int previousAimTrainerScore = 0;
+
+    // Classroom tracking
+    public static bool hasSavedClassroomPosition = false;
+    public static Vector3 classroomPlayerPosition;
+    public static bool skipClassroomIntro = false;
+
     public static void FinishStudyAndReturn()
     {
         hasFinishedStudy = true;

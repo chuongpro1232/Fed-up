@@ -186,6 +186,17 @@ public class AimTrainerManager : MonoBehaviour
 
     public void ExitToSampleScene()
     {
+        int lastScore = PlayerPrefs.GetInt("AimTrainerHighScore", 0);
+        
+        SceneReturnData.justFinishedAimTrainer = true;
+        SceneReturnData.latestAimTrainerScore = score;
+        SceneReturnData.previousAimTrainerScore = lastScore;
+        
+        if (score > lastScore)
+        {
+            PlayerPrefs.SetInt("AimTrainerHighScore", score);
+        }
+
         SceneManager.LoadScene("SampleScene");
     }
 

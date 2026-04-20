@@ -26,6 +26,10 @@ public class StartCutsceneDialogue : MonoBehaviour
     [TextArea(2, 5)]
     public string[] dialogueLines;
 
+    [Header("End of Study Dialogue")]
+    [TextArea(2, 5)]
+    public string[] finalStudyLines = new string[] { "I am so fed up with studying and these distractions!" };
+
 
     [Header("Position")]
     public Vector2 screenOffset = new Vector2(0f, 60f);
@@ -68,7 +72,7 @@ public class StartCutsceneDialogue : MonoBehaviour
         {
             SceneReturnData.hasFinishedStudy = false;
             SceneReturnData.skipSampleSceneIntro = false;
-            StartCoroutine(PlayBedtimeCutscene());
+            StartCoroutine(PlayFinalDialogueThenBed());
             return;
         }
 
@@ -191,6 +195,26 @@ public class StartCutsceneDialogue : MonoBehaviour
 
         // Bắt đầu hiện hội thoại
         StartDialogue();
+    }
+
+    private System.Collections.IEnumerator PlayFinalDialogueThenBed()
+    {
+        // 1. Play final dialogue
+        Transform speaker = playerTransform != null ? playerTransform : transform;
+        
+        if (DialogueManager.Instance != null && finalStudyLines != null && finalStudyLines.Length > 0)
+        {
+            DialogueManager.Instance.StartDialogue(speaker, "Player", finalStudyLines);
+
+            // Wait until dialogue panel is closed
+            while (DialogueManager.Instance.dialoguePanel.gameObject.activeSelf)
+            {
+                yield return null;
+            }
+        }
+        
+        // 2. Play the Bedtime Sequence
+        yield return StartCoroutine(PlayBedtimeCutscene());
     }
 
     private System.Collections.IEnumerator PlayBedtimeCutscene()
