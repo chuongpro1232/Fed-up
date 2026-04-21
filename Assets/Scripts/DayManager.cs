@@ -9,6 +9,16 @@ public class DayManager : MonoBehaviour
     [Tooltip("The ComputerTrigger empty object which acts as the Table interaction")]
     public GameObject tableObject;
 
+    [Header("Morning Visuals (Day 2)")]
+    [Tooltip("Kéo object cái Cửa Sổ (hoặc sprite ánh sáng) vào đây để nó đổi màu")]
+    public SpriteRenderer windowSprite;
+    [Tooltip("Màu của cửa sổ sẽ đổi thành màu vàng này khi sang Ngày 2")]
+    public Color morningWindowColor = new Color(1f, 0.9f, 0.4f, 1f); // Màu vàng nhạt ban mai
+    [Tooltip("Nếu bạn có Ánh sáng ban ngày (hoặc object chứa sprite nắng), kéo vào đây để BẬT nó lên")]
+    public GameObject morningLightObject;
+    [Tooltip("Nếu bạn có Ánh sáng ban đêm (hoặc object chứa màu tối), kéo vào đây để TẮT nó đi")]
+    public GameObject nightLightObject;
+
     void Start()
     {
         SetupDay();
@@ -56,6 +66,27 @@ public class DayManager : MonoBehaviour
                 // Disable the trigger GameObject completely so they can't study again
                 tableObject.SetActive(false);
             }
+
+            // --- CHUYỂN CẢNH SANG BAN NGÀY ---
+            if (windowSprite != null)
+            {
+                windowSprite.color = morningWindowColor;
+            }
+
+            if (morningLightObject != null)
+            {
+                morningLightObject.SetActive(true);
+            }
+
+            if (nightLightObject != null)
+            {
+                nightLightObject.SetActive(false);
+            }
+        }
+        else if (currentDay == 1) // Đảm bảo trạng thái ban đêm ở Ngày 1
+        {
+            if (morningLightObject != null) morningLightObject.SetActive(false);
+            if (nightLightObject != null) nightLightObject.SetActive(true);
         }
     }
 }
