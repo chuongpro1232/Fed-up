@@ -23,6 +23,10 @@ public class StartCutsceneDialogue : MonoBehaviour
     [Header("Dialogue")]
     public string speakerName = "Player";
 
+    [Header("Name Input")]
+    public GameObject nameChoosePanel;
+    public TMP_InputField nameInputField;
+
     [TextArea(2, 5)]
     public string[] dialogueLines;
 
@@ -143,8 +147,44 @@ public class StartCutsceneDialogue : MonoBehaviour
             playerTransform.position = bedWaypoint.position;
         }
 
-        // Hiện màu đen, đợi một tí cho ổn định
-        yield return new WaitForSeconds(1f);
+        // Before fading in, let's get the player's name!
+        string savedName = PlayerPrefs.GetString("PlayerName", "");
+        if (string.IsNullOrEmpty(savedName) || savedName == "Player")
+        {
+            // Show the name panel
+            if (nameChoosePanel != null)
+            {
+                nameChoosePanel.SetActive(true);
+                
+                int oldSort = 0;
+                if (parentCanvas != null)
+                {
+                    oldSort = parentCanvas.sortingOrder;
+                    parentCanvas.sortingOrder = 1000; // Put UI on top of black screen (999)
+                }
+
+                if (nameInputField != null)
+                {
+                    nameInputField.text = ""; // clear it
+                    nameInputField.Select();
+                    nameInputField.ActivateInputField();
+                }
+
+                // Wait forever until the player submits their name and closes the panel
+                while (nameChoosePanel.activeSelf)
+                {
+                    yield return null;
+                }
+
+                if (parentCanvas != null)
+                {
+                    parentCanvas.sortingOrder = oldSort; // Restore sorting order
+                }
+            }
+        }
+
+        // Tạm dừng một tí trước khi màn hình sáng lên
+        yield return new WaitForSeconds(0.5f);
 
         // Bắt đầu sáng dần lên trong 2 giây
         float fadeTime = 2f;
@@ -387,7 +427,9 @@ public class StartCutsceneDialogue : MonoBehaviour
 
         if (speakerNameText != null)
         {
-            speakerNameText.text = speakerName;
+            string pName = PlayerPrefs.GetString("PlayerName", speakerName);
+            if (string.IsNullOrEmpty(pName)) pName = speakerName;
+            speakerNameText.text = pName;
         }
 
         ShowCurrentLine();
@@ -453,5 +495,22 @@ public class StartCutsceneDialogue : MonoBehaviour
         );
 
         dialoguePanel.anchoredPosition = localPoint + screenOffset;
+    }
+
+    // Called by the Submit Button on the Name Choose Panel
+    public void SubmitPlayerName()
+    {
+        if (nameInputField != null && !string.IsNullOrEmpty(nameInputField.text.Trim()))
+        {
+            string newName = nameInputField.text.Trim();
+            PlayerPrefs.SetString("PlayerName", newName);
+            PlayerPrefs.Save();
+            
+            // Hiding the panel will automatically resume the intro cutscene Coroutine!
+            if (nameChoosePanel != null)
+            {
+                nameChoosePanel.SetActive(false);
+            }
+        }
     }
 }

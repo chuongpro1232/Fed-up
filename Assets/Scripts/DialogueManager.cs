@@ -110,7 +110,15 @@ public class DialogueManager : MonoBehaviour
 
         if (speakerNameText != null)
         {
-            speakerNameText.text = speakerName;
+            if (speakerName == "Player")
+            {
+                string pName = PlayerPrefs.GetString("PlayerName", "Player");
+                speakerNameText.text = string.IsNullOrEmpty(pName) ? "Player" : pName;
+            }
+            else
+            {
+                speakerNameText.text = speakerName;
+            }
         }
 
         if (playerMovement != null)
