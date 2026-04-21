@@ -1916,7 +1916,7 @@ MonoBehaviour:
   joingameParent: {fileID: 1321244149}
   csgoBackground: {fileID: 1146513626}
   exitButton: {fileID: 1655721056}
-  waitDelay: 3.18
+  waitDelay: 5
   minX: -3.8
   maxX: 4
   minY: -0.8
@@ -2321,7 +2321,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   steamBackground: {fileID: 619527369}
   moveSpeed: 3
-  startDelay: 1
+  startDelay: 5
   backgroundShowTime: 7
   minX: -3.8
   maxX: 4

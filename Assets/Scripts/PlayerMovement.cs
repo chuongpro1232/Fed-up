@@ -12,6 +12,8 @@ public class PlayerMovement : MonoBehaviour
     private Vector2 lastMoveDirection;
     private bool canMove = true;
 
+    public bool CanMove => canMove;
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
