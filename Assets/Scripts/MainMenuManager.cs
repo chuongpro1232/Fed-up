@@ -16,6 +16,9 @@ public class MainMenuManager : MonoBehaviour
     [Tooltip("Drag the LoadGamePanelDialogue object here")]
     public GameObject loadGameDialoguePanel;
 
+    [Tooltip("Drag the NoSaveGamePanelDialogue object here")]
+    public GameObject noSaveGameDialoguePanel;
+
     private void Start()
     {
         // Ensure the popout panels are hidden when the game first starts
@@ -30,6 +33,10 @@ public class MainMenuManager : MonoBehaviour
         if (loadGameDialoguePanel != null)
         {
             loadGameDialoguePanel.SetActive(false);
+        }
+        if (noSaveGameDialoguePanel != null)
+        {
+            noSaveGameDialoguePanel.SetActive(false);
         }
     }
 
@@ -149,11 +156,29 @@ public class MainMenuManager : MonoBehaviour
     {
         if (GameSaveManager.Instance != null)
         {
-            GameSaveManager.Instance.LoadGame(slotIndex);
+            bool success = GameSaveManager.Instance.LoadGame(slotIndex);
+            
+            // If there is no save file, pop up the warning!
+            if (!success)
+            {
+                if (noSaveGameDialoguePanel != null)
+                {
+                    noSaveGameDialoguePanel.SetActive(true);
+                }
+            }
         }
         else
         {
             Debug.LogError("Cannot load! GameSaveManager is missing from the scene.");
+        }
+    }
+
+    // Call this from the "OK" button on the No Save panel
+    public void OnClickCloseNoSavePanel()
+    {
+        if (noSaveGameDialoguePanel != null)
+        {
+            noSaveGameDialoguePanel.SetActive(false);
         }
     }
 }

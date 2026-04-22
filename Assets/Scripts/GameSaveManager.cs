@@ -47,7 +47,7 @@ public class GameSaveManager : MonoBehaviour
     }
 
     // Call this to LOAD the game from a specific slot (1, 2, or 3)
-    public void LoadGame(int slotIndex)
+    public bool LoadGame(int slotIndex)
     {
         string prefix = "Slot" + slotIndex + "_";
         
@@ -86,10 +86,12 @@ public class GameSaveManager : MonoBehaviour
             // 4. Load the Scene!
             SceneManager.LoadScene(sceneName);
             Debug.Log("Game SUCCESSFULLY Loaded from Slot " + slotIndex);
+            return true;
         }
         else
         {
             Debug.LogWarning("No save data exists in Slot " + slotIndex + "!");
+            return false;
         }
     }
 }
