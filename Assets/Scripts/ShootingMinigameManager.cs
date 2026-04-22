@@ -233,6 +233,14 @@ public class ShootingMinigameManager : MonoBehaviour
             PlayerPrefs.SetInt("ShootingMinigameHighScore", score);
         }
 
-        SceneManager.LoadScene("Net");
+        // If score exceeds 60, load Newspaper scene. Otherwise, load Net scene.
+        if (score > 60)
+        {
+            SceneManager.LoadScene("Newspaper");
+        }
+        else
+        {
+            SceneManager.LoadScene("Net");
+        }
     }
 }

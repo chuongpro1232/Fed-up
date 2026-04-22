@@ -12,9 +12,6 @@ EditorBuildSettings:
     path: Assets/Scenes/SampleScene.unity
     guid: 8c9cfa26abfee488c85f1582747f6a02
   - enabled: 1
-    path: Assets/Scenes/AimTrainer.unity
-    guid: fb044adc7135d754788853e08f63c0c8
-  - enabled: 1
     path: Assets/Scenes/Laptop.unity
     guid: 867dc88dec44530449b7001427f2f213
   - enabled: 1
@@ -24,8 +21,14 @@ EditorBuildSettings:
     path: Assets/Scenes/BlackBoard.unity
     guid: 89132a2b93a2b1847964f7ab2f7c972a
   - enabled: 1
+    path: Assets/Scenes/Shooting.unity
+    guid: 855ed64120c7f1642bac8ea7856e451f
+  - enabled: 1
     path: Assets/Scenes/Net.unity
     guid: e5f63d0302baf794ca97a892583792e1
+  - enabled: 1
+    path: Assets/Scenes/Newspaper.unity
+    guid: 6501809df9dfad64792b6a11844d4de1
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   m_UseUCBPForAssetBundles: 0

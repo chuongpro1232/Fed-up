@@ -729,7 +729,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 375850801}
+      - m_Target: {fileID: 548971508}
         m_TargetAssemblyTypeName: PauseMenuManager, Assembly-CSharp
         m_MethodName: CloseSavePanel
         m_Mode: 1
@@ -1007,7 +1007,6 @@ GameObject:
   m_Component:
   - component: {fileID: 375850803}
   - component: {fileID: 375850802}
-  - component: {fileID: 375850801}
   m_Layer: 0
   m_Name: GameSaveManager
   m_TagString: Untagged
@@ -1015,20 +1014,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &375850801
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 375850800}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dc7bad0cd69bf494e9be4ffbe598c68b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  escPanel: {fileID: 1334060031}
-  saveSlotPanel: {fileID: 1986017850}
 --- !u!114 &375850802
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1510,7 +1495,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 375850801}
+      - m_Target: {fileID: 548971508}
         m_TargetAssemblyTypeName: PauseMenuManager, Assembly-CSharp
         m_MethodName: ReturnToMainMenu
         m_Mode: 1
@@ -1924,6 +1909,7 @@ GameObject:
   - component: {fileID: 548971506}
   - component: {fileID: 548971505}
   - component: {fileID: 548971504}
+  - component: {fileID: 548971508}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -2019,6 +2005,20 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &548971508
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 548971503}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc7bad0cd69bf494e9be4ffbe598c68b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  escPanel: {fileID: 1334060031}
+  saveSlotPanel: {fileID: 1986017850}
 --- !u!1 &600081290
 GameObject:
   m_ObjectHideFlags: 0
@@ -2688,7 +2688,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 375850801}
+      - m_Target: {fileID: 548971508}
         m_TargetAssemblyTypeName: PauseMenuManager, Assembly-CSharp
         m_MethodName: SaveToSlot
         m_Mode: 3
@@ -2999,7 +2999,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 375850801}
+      - m_Target: {fileID: 548971508}
         m_TargetAssemblyTypeName: PauseMenuManager, Assembly-CSharp
         m_MethodName: SaveToSlot
         m_Mode: 3
@@ -3192,7 +3192,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 375850801}
+      - m_Target: {fileID: 548971508}
         m_TargetAssemblyTypeName: PauseMenuManager, Assembly-CSharp
         m_MethodName: OpenSavePanel
         m_Mode: 1
@@ -5202,7 +5202,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 375850801}
+      - m_Target: {fileID: 548971508}
         m_TargetAssemblyTypeName: PauseMenuManager, Assembly-CSharp
         m_MethodName: SaveToSlot
         m_Mode: 3
