@@ -36,6 +36,11 @@ public class ShootingMinigameManager : MonoBehaviour
     public GameObject gameOverPanel;
     public TMP_Text finalScoreText;
 
+    [Header("Audio")]
+    [Tooltip("Kéo file âm thanh tiếng súng hoặc click vào đây")]
+    public AudioClip hitSound;
+    private AudioSource audioSource;
+
     private int score = 0;
     private float timer;
     private bool gameEnded = false;
@@ -56,6 +61,8 @@ public class ShootingMinigameManager : MonoBehaviour
         {
             Cursor.SetCursor(crosshairTexture, cursorHotspot, CursorMode.Auto);
         }
+
+        audioSource = gameObject.AddComponent<AudioSource>();
 
         for (int i = 0; i < maxTargets; i++)
         {
@@ -91,6 +98,11 @@ public class ShootingMinigameManager : MonoBehaviour
 
         score++;
         UpdateScoreUI();
+
+        if (hitSound != null && audioSource != null)
+        {
+            audioSource.PlayOneShot(hitSound);
+        }
 
         Destroy(targetObject);
         SpawnTarget();

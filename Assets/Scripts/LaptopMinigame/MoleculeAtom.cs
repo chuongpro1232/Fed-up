@@ -11,6 +11,12 @@ public class MoleculeAtom : MonoBehaviour
     [Tooltip("Danh sách các móc câu của atom này. Tự động tìm khi Start.")]
     public List<AtomHook> hooks = new List<AtomHook>();
 
+    [Header("Audio")]
+    [Tooltip("Âm thanh khi nhấc nguyên tử lên")]
+    public AudioClip grabSound;
+    [Tooltip("Âm thanh khi thả nguyên tử xuống")]
+    public AudioClip dropSound;
+
     void Start()
     {
         // Vô hiệu hóa va chạm vật lý để các khối không bị đẩy văng ra khi ghép
@@ -51,6 +57,11 @@ public class MoleculeAtom : MonoBehaviour
         {
             atom.PrepareDrag(mousePosition);
         }
+
+        if (grabSound != null)
+        {
+            AudioSource.PlayClipAtPoint(grabSound, Camera.main.transform.position);
+        }
     }
 
     void OnMouseDrag()
@@ -83,6 +94,11 @@ public class MoleculeAtom : MonoBehaviour
         foreach(var atom in GetConnectedAtoms())
         {
             atom.EndDrag();
+        }
+
+        if (dropSound != null)
+        {
+            AudioSource.PlayClipAtPoint(dropSound, Camera.main.transform.position);
         }
     }
 
