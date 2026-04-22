@@ -26,6 +26,11 @@ public class ClassroomCutsceneManager : MonoBehaviour
 
     [Header("Post-Minigame Sequence")]
     public GameObject blackboardTrigger; // The trigger to disable so we don't loop
+    
+    [TextArea(2, 5)]
+    public string[] postMinigameTeacherLines;
+    public Transform exitClassWaypoint; // Where the player walks to leave
+    public string nextSceneName = "Net";
 
     private void Start()
     {
@@ -164,16 +169,100 @@ public class ClassroomCutsceneManager : MonoBehaviour
                 yield return null;
             }
 
-            // Stand still when arrived
+            // Stand still when arrived and face the teacher (up)
             if (anim != null)
             {
                 anim.SetFloat("Horizontal", 0);
-                anim.SetFloat("Vertical", -1); // face down when returned
+                anim.SetFloat("Vertical", 1); 
                 anim.SetFloat("Speed", 0f);
             }
         }
+
+        // --- NEW EXTENDED SEQUENCE ---
+
+        // 1. Zoom Camera to Teacher
+        if (cameraFollow != null && teacherTransform != null)
+        {
+            cameraFollow.target = teacherTransform;
+            cameraFollow.SetZoom(teacherZoomLevel, zoomSpeed);
+            yield return new WaitForSeconds(1.5f);
+        }
+
+        // 2. Play Post-Minigame Teacher Dialogue
+        if (DialogueManager.Instance != null && postMinigameTeacherLines != null && postMinigameTeacherLines.Length > 0)
+        {
+            DialogueManager.Instance.StartDialogue(teacherTransform, teacherSpeakerName, postMinigameTeacherLines);
+
+            // Wait until dialogue is closed
+            while (DialogueManager.Instance.dialoguePanel.gameObject.activeSelf)
+            {
+                yield return null;
+            }
+        }
+
+        // 3. Zoom Camera back to Player
+        if (cameraFollow != null && playerTransform != null)
+        {
+            cameraFollow.target = playerTransform;
+            cameraFollow.ResetZoom(zoomSpeed);
+            yield return new WaitForSeconds(1.0f);
+        }
+
+        // 4. Player walks out of class
+        if (playerTransform != null && exitClassWaypoint != null)
+        {
+            Animator anim = playerTransform.GetComponent<Animator>();
+            
+            while (Vector3.Distance(playerTransform.position, exitClassWaypoint.position) > 0.05f)
+            {
+                Vector3 dir = (exitClassWaypoint.position - playerTransform.position).normalized;
+                playerTransform.position = Vector3.MoveTowards(playerTransform.position, exitClassWaypoint.position, walkSpeed * Time.deltaTime);
+
+                if (anim != null)
+                {
+                    anim.SetFloat("Horizontal", dir.x);
+                    anim.SetFloat("Vertical", dir.y);
+                    anim.SetFloat("Speed", 1f); 
+                }
+                yield return null;
+            }
+
+            if (anim != null)
+            {
+                anim.SetFloat("Horizontal", 0);
+                anim.SetFloat("Vertical", -1);
+                anim.SetFloat("Speed", 0f);
+            }
+        }
+
+        // 5. Fade out to black
+        GameObject canvasObj = new GameObject("FadeCanvas");
+        Canvas c = canvasObj.AddComponent<Canvas>();
+        c.renderMode = RenderMode.ScreenSpaceOverlay;
+        c.sortingOrder = 999;
+        canvasObj.AddComponent<UnityEngine.UI.CanvasScaler>();
+
+        GameObject imageObj = new GameObject("BlackImage");
+        imageObj.transform.SetParent(canvasObj.transform, false);
+        UnityEngine.UI.Image img = imageObj.AddComponent<UnityEngine.UI.Image>();
+        img.color = new Color(0, 0, 0, 0);
         
-        // Freedom restored!
-        if (playerMovement != null) playerMovement.SetCanMove(true);
+        RectTransform rt = img.GetComponent<RectTransform>();
+        rt.anchorMin = Vector2.zero;
+        rt.anchorMax = Vector2.one;
+        rt.sizeDelta = Vector2.zero;
+
+        float fadeTime = 2f;
+        float elapsed = 0f;
+        while (elapsed < fadeTime)
+        {
+            elapsed += Time.deltaTime;
+            float alpha = Mathf.Lerp(0f, 1f, elapsed / fadeTime);
+            img.color = new Color(0, 0, 0, alpha);
+            yield return null;
+        }
+
+        // 6. Load Next Scene
+        UnityEngine.SceneManagement.SceneManager.LoadScene(nextSceneName);
     }
 }

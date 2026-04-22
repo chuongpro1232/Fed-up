@@ -587,6 +587,11 @@ MonoBehaviour:
   - 'I hope you all had done your homework and looked the materials I gave you. '
   - Remember that this result will affect heavily on your future career path.
   blackboardTrigger: {fileID: 1668797058}
+  postMinigameTeacherLines:
+  - "I can\u2019t say I\u2019m surprised."
+  - "You can leave the room, but you can\u2019t leave your incompetence behind."
+  exitClassWaypoint: {fileID: 414420199}
+  nextSceneName: Net
 --- !u!1 &369806947
 GameObject:
   m_ObjectHideFlags: 0
@@ -1068,6 +1073,37 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 0.9375, y: 1.8932893}
   m_EdgeRadius: 0
+--- !u!1 &414420197
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 414420199}
+  m_Layer: 0
+  m_Name: ExitClassroomWaypoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &414420199
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 414420197}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -1.1, y: -5.14, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &430793875
 GameObject:
   m_ObjectHideFlags: 0
@@ -8761,3 +8797,4 @@ SceneRoots:
   - {fileID: 1929297794}
   - {fileID: 1923373302}
   - {fileID: 1668797061}
+  - {fileID: 414420199}
