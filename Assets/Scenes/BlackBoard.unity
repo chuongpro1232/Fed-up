@@ -512,8 +512,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -644.23, y: 393.32}
-  m_SizeDelta: {x: 200, y: 50}
+  m_AnchoredPosition: {x: -661.211, y: 374.5515}
+  m_SizeDelta: {x: 166.038, y: 87.537}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &147003635
 MonoBehaviour:
@@ -537,8 +537,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 23e42c04f821f9842892c49e92beb924, type: 2}
+  m_sharedMaterial: {fileID: 9197965938267183063, guid: 23e42c04f821f9842892c49e92beb924, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1158,8 +1158,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -273, y: 234}
-  m_SizeDelta: {x: 942.4624, y: 368.64}
+  m_AnchoredPosition: {x: -316.87256, y: 194.51471}
+  m_SizeDelta: {x: 854.7173, y: 447.6106}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &873438516
 MonoBehaviour:
@@ -1183,15 +1183,15 @@ MonoBehaviour:
       m_Calls: []
   m_text: 
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 23e42c04f821f9842892c49e92beb924, type: 2}
+  m_sharedMaterial: {fileID: 9197965938267183063, guid: 23e42c04f821f9842892c49e92beb924, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+  m_fontColor: {r: 1, g: 0, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -1214,7 +1214,7 @@ MonoBehaviour:
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 0
+  m_fontStyle: 1
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 256
   m_textAlignment: 65535
@@ -1783,19 +1783,15 @@ MonoBehaviour:
   ruleString: 'Rules of the game:
 
 
-
     - Drag and drop to connect the molecules.
-
 
 
     -
     No hooks can be left empty.
 
 
-
     - A single molecule must be formed.'
   ruleText: {fileID: 873438516}
-  ruleDisplayDuration: 15
 --- !u!1 &1122236342
 GameObject:
   m_ObjectHideFlags: 0
@@ -2527,10 +2523,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_UiScaleMode: 0
+  m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 800, y: 600}
+  m_ReferenceResolution: {x: 1920, y: 1080}
   m_ScreenMatchMode: 0
   m_MatchWidthOrHeight: 0
   m_PhysicalUnit: 3

@@ -36,6 +36,14 @@ public class ShootingMinigameManager : MonoBehaviour
     public GameObject gameOverPanel;
     public TMP_Text finalScoreText;
 
+    [Header("Win Transition UI")]
+    public GameObject gameFinishPanel;
+    public TMP_Text textDone;
+    [TextArea(2, 5)]
+    public string finishText = "You have uncovered a secret...";
+    public float typingSpeed = 0.05f;
+    public float delayBeforeLoad = 2f;
+
     [Header("Audio")]
     [Tooltip("Kéo file âm thanh tiếng súng hoặc click vào đây")]
     public AudioClip hitSound;
@@ -52,6 +60,10 @@ public class ShootingMinigameManager : MonoBehaviour
         if (gameOverPanel != null)
         {
             gameOverPanel.SetActive(false);
+        }
+        if (gameFinishPanel != null)
+        {
+            gameFinishPanel.SetActive(false);
         }
 
         UpdateScoreUI();
@@ -233,14 +245,76 @@ public class ShootingMinigameManager : MonoBehaviour
             PlayerPrefs.SetInt("ShootingMinigameHighScore", score);
         }
 
-        // If score exceeds 60, load Newspaper scene. Otherwise, load Net scene.
+        // If score exceeds 60, play transition then load Newspaper scene. Otherwise, load Net scene.
         if (score > 60)
         {
-            SceneManager.LoadScene("Newspaper");
+            StartCoroutine(TransitionToNewspaper());
         }
         else
         {
             SceneManager.LoadScene("Net");
         }
+    }
+
+    private System.Collections.IEnumerator TransitionToNewspaper()
+    {
+        // 1. Hide Game Over Panel
+        if (gameOverPanel != null) gameOverPanel.SetActive(false);
+
+        // 2. Create Black Screen and Fade to Black
+        GameObject canvasObj = new GameObject("FadeCanvas");
+        Canvas c = canvasObj.AddComponent<Canvas>();
+        c.renderMode = RenderMode.ScreenSpaceOverlay;
+        c.sortingOrder = 999; // Render on top of everything
+        canvasObj.AddComponent<UnityEngine.UI.CanvasScaler>();
+
+        GameObject imageObj = new GameObject("BlackImage");
+        imageObj.transform.SetParent(canvasObj.transform, false);
+        UnityEngine.UI.Image img = imageObj.AddComponent<UnityEngine.UI.Image>();
+        img.color = new Color(0, 0, 0, 0); // Start totally transparent
+        
+        RectTransform rt = img.GetComponent<RectTransform>();
+        rt.anchorMin = Vector2.zero;
+        rt.anchorMax = Vector2.one;
+        rt.sizeDelta = Vector2.zero;
+
+        float fadeTime = 1.5f;
+        float elapsed = 0f;
+        while (elapsed < fadeTime)
+        {
+            elapsed += Time.deltaTime;
+            float alpha = Mathf.Lerp(0f, 1f, elapsed / fadeTime);
+            img.color = new Color(0, 0, 0, alpha);
+            yield return null;
+        }
+
+        // 3. Show Game Finish Panel & Typewriter Effect
+        if (gameFinishPanel != null)
+        {
+            // Make sure the panel's Canvas is above the black screen!
+            Canvas finishCanvas = gameFinishPanel.GetComponentInParent<Canvas>();
+            if (finishCanvas != null)
+            {
+                finishCanvas.sortingOrder = 1000;
+            }
+            
+            gameFinishPanel.SetActive(true);
+
+            if (textDone != null)
+            {
+                textDone.text = ""; // Clear text
+                foreach (char letter in finishText.ToCharArray())
+                {
+                    textDone.text += letter;
+                    yield return new WaitForSeconds(typingSpeed);
+                }
+            }
+        }
+
+        // 4. Wait a moment so player can read the text
+        yield return new WaitForSeconds(delayBeforeLoad);
+
+        // 5. Load Newspaper
+        SceneManager.LoadScene("Newspaper");
     }
 }

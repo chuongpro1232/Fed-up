@@ -19,16 +19,13 @@ public class BlackBoardLevelManager : MonoBehaviour
     [Tooltip("Tên Scene sẽ bị văng về khi hết giờ (ví dụ: Classroom)")]
     public string timeoutScene = "Classroom";
     
-    [Tooltip("Luật chơi hiển thị cho game thủ")]
+    [Tooltip("Luật chơi hiển thị cho game thủ (sẽ tự động ẩn khi qua Level 1)")]
     [TextArea(3, 5)]
     public string ruleString = "Luật chơi:\n- Kéo thả để ghép nối các phân tử.\n- Không được để trống bất kì cái móc nào.\n- Phải tạo thành một khối phân tử duy nhất.";
     public TextMeshProUGUI ruleText;
-    [Tooltip("Thời gian hiển thị bảng luật (giây)")]
-    public float ruleDisplayDuration = 15f;
 
     private float currentTime;
     private bool isGameOver = false;
-    private bool isShowingRules = false;
     private int currentLevelIndex = 0;
     private GameObject currentLevelClone;
 
@@ -55,22 +52,19 @@ public class BlackBoardLevelManager : MonoBehaviour
         // Sinh ra bản sao của level hiện tại
         SpawnLevel(currentLevelIndex);
 
-        // Cài đặt thời gian và ui rules
-        if (ruleText != null && ruleDisplayDuration > 0)
+        currentTime = maxTime;
+
+        // Hiện luật chơi ở Level 1 (Tutorial)
+        if (ruleText != null)
         {
-            isShowingRules = true;
-            currentTime = ruleDisplayDuration;
             ruleText.text = ruleString;
             ruleText.gameObject.SetActive(true);
-            
-            if (timerText != null) timerText.gameObject.SetActive(false);
         }
-        else
+
+        if (timerText != null)
         {
-            isShowingRules = false;
-            currentTime = maxTime;
-            if (ruleText != null) ruleText.gameObject.SetActive(false);
-            if (timerText != null) timerText.gameObject.SetActive(true);
+            timerText.gameObject.SetActive(true);
+            UpdateTimerUI();
         }
     }
 
@@ -78,43 +72,38 @@ public class BlackBoardLevelManager : MonoBehaviour
     {
         if (isGameOver) return;
 
+        // Level 1 (Index 0) là Tutorial. Không đếm ngược thời gian!
+        if (currentLevelIndex == 0)
+        {
+            return;
+        }
+
         if (currentTime > 0)
         {
             currentTime -= Time.deltaTime;
-            
-            if (isShowingRules)
-            {
-                if (currentTime <= 0)
-                {
-                    isShowingRules = false;
-                    currentTime = maxTime; // Bắt đầu tính giờ chơi chính thức
-                    
-                    if (ruleText != null) ruleText.gameObject.SetActive(false);
-                    if (timerText != null) timerText.gameObject.SetActive(true);
-                }
-            }
-            else
-            {
-                // Cập nhật UI
-                if (timerText != null)
-                {
-                    int min = Mathf.FloorToInt(currentTime / 60);
-                    int sec = Mathf.FloorToInt(currentTime % 60);
-                    timerText.text = string.Format("{0:00}:{1:00}", min, sec);
-                }
+            UpdateTimerUI();
 
-                // Hết giờ
-                if (currentTime <= 0)
+            // Hết giờ
+            if (currentTime <= 0)
+            {
+                currentTime = 0;
+                isGameOver = true;
+                Debug.Log("Hết giờ!");
+                if (!string.IsNullOrEmpty(timeoutScene))
                 {
-                    currentTime = 0;
-                    isGameOver = true;
-                    Debug.Log("Hết giờ!");
-                    if (!string.IsNullOrEmpty(timeoutScene))
-                    {
-                        SceneManager.LoadScene(timeoutScene);
-                    }
+                    SceneManager.LoadScene(timeoutScene);
                 }
             }
+        }
+    }
+
+    void UpdateTimerUI()
+    {
+        if (timerText != null)
+        {
+            int min = Mathf.FloorToInt(currentTime / 60);
+            int sec = Mathf.FloorToInt(currentTime % 60);
+            timerText.text = string.Format("{0:00}:{1:00}", min, sec);
         }
     }
 
@@ -203,6 +192,12 @@ public class BlackBoardLevelManager : MonoBehaviour
         {
             currentLevelIndex++;
             
+            // Tắt bảng hướng dẫn khi đã qua Level 1 (Tutorial)
+            if (currentLevelIndex == 1 && ruleText != null)
+            {
+                ruleText.gameObject.SetActive(false);
+            }
+
             // Bật level tiếp theo nếu còn
             if (currentLevelIndex < levels.Count)
             {
